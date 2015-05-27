@@ -1,0 +1,138 @@
+<% include header.html %>
+
+<header class="am-topbar admin-header">
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+
+  <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+
+    <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-middle admin-header-list">
+
+      <li>
+        <a href="/userPage">
+          <span class="am-icon-man-o">
+            主页
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="/state">
+          <span class="am-icon-man-o">
+            状态
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:;">
+          <span class="am-icon-man-o">
+            相册
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:;">
+          <span class="am-icon-man-o">
+            多人聊天室
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:;">
+          <span class="am-icon-man-o">
+            附近的人
+          </span>
+        </a>
+      </li>
+
+
+    </ul>
+  </div>
+</header>
+
+
+
+<div class="am-cf am-padding">
+  <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">聊天</strong> / <small>Chat</small></div>
+  <div><h1 name = "nick" class = "nick" align=center>Hi, <%= title %>.</h1></div>
+</div>
+
+<div class = "loading">
+  <h3 align = center>Loading...</h3>
+</div>
+
+<!-- <div align = center class = "nick-dialog" style = "display:none">
+  <h3>Enter your nick name:</h3>
+  <div><input name = "" class = "" placeholder = "nickname" value = "SHIT"<%= title %>""></div>
+</div> -->
+
+<div class = "chat-dialog" style = "display:none">
+  <div align = center class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+    <textarea readonly class = "textarea am-u-sm-8 am-u-md-8 am-u-lg-8" rows=15></textarea>
+    </>
+    <textarea readonly class = "list am-u-sm-4 am-u-md-4 am-u-lg-4" rows=15></textarea>
+  </div>
+
+  <div align=center class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+    <input name = "comment" class = "comment am-u-sm-10 am-u-md-10 am-u-lg-10" placeholder = "say something" style="height:50px">
+    <button type = "button" class = "am-u-sm-2 am-u-md-2 am-u-lg-2 am-btn am-btn-primary am-btn-sm sendbutton" style="height:50px">Send!</button>
+  </div>
+</div>
+
+<footer>
+  <br/>
+  <hr>
+  <p class="am-padding-left" align=center>fakebook Tongji</p>
+</footer>
+
+
+<script src = "//libs.cdnjs.net/jquery/2.1.1/jquery.min.js"></script>
+<script src="assets/js/amazeui.min.js"></script>
+<script src = "/socket.io/socket.io.js"></script>
+
+
+
+<script>
+  var socket = io ();//
+  socket.on ('connect', function () {
+    $('.loading').hide ();
+    //$('.nick-dialog').show ();
+
+      socket.emit ('changename', "<%= title %>");
+      // $('.nick-dialog').hide ();
+       $('.chat-dialog').show ();
+  });
+
+  socket.on ('list_changed', function (list) {
+    $('.list').val (list.join ('\n'));
+  });
+
+
+  socket.on ('comment', function (text) {
+    if ($('.textarea').val () !== '') {
+      $('.textarea').val ($('.textarea').val() + '\n' + text);
+    } else {
+      $('.textarea').val (text);
+    }
+  });
+
+  function send (text) {/* */
+    $.get ('/comment?text=' + encodeURIComponent (text));
+  }
+
+  $('.comment').keydown (function (event) {
+    if (event.which === 13) { /*13--> '\n' */
+      send ("<%= title %>: " + this.value);
+      this.value = '';
+    }
+  });
+
+  $('.sendbutton').click (function () {
+    send ("<%= title %>: " + $('.comment').val());
+	  $('.comment').val ('');
+  });
+</script>
+</body>
+</html>

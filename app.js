@@ -1,0 +1,210 @@
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var mongoose = require ('mongoose');
+var fs = require ('fs');
+var db = mongoose.createConnection('mongodb://127.0.0.1:27017/user_db');
+var session = require ('express-session');
+
+var users_login_model = require ('./models/user')[0];
+var users_info_model = require ('./models/user')[1];
+var users_state_model = require ('./models/user')[2];
+
+
+var routes = require ('./routes/index');
+var users = require('./routes/users');
+
+
+var app = express();
+//app.use (session ({secret: 'monzy zhang', cookie: {maxAge: 60000}}));
+//app.use(express.cookieParser());//开启cookie
+//app.use(express.session({//开启session
+//    secret: config.session_secret
+//}));
+//app.use(app.router);
+////////
+var chattingServer = require ('http').Server (app);
+var io = require ('socket.io')(chattingServer);
+
+
+
+var mwCookie = cookieParser('my secret');
+var mwSession = session({
+  secret: 'my secret',
+  resave: false,
+  saveUninitialized: true,
+  store: new session.MemoryStore(),
+});
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(mwCookie);
+app.use(mwSession);
+
+
+// socket.io
+
+io.use(function(socket, next) {
+  var req = socket.handshake;
+  var res = {};
+  mwCookie(req, res, function(err) {
+    if (err) return next(err);
+    mwSession(req, res, next);
+  });
+});
+
+
+chattingServer.listen (3000);
+
+
+function getAllNames () {
+	return clients.map (function (socket) {
+		return socket._name;
+	});
+}
+
+function getAllStates (username, socket) {
+    users_state_model.find ({_id: username}, function (err, docs) {
+        if (!err) {
+          var fns = docs[0].filenames;
+          if (fns === "") {
+
+          } else {
+            var filenames = fns.split (',');
+            var fileContents = [];
+            console.log ("FILEs: " + filenames);
+            for (var i = 0; i < filenames.length; ++i) {
+              fileContents.push (fs.readFileSync (filenames[i]).toString ());
+            }
+            socket.emit ("gethistorystatesfromserver", fileContents);
+          }
+        } else {
+            console.log ('ERROR: ' + err);
+        }
+    });
+}
+
+
+
+function onListChanged () {
+	io.emit ('list_changed', getAllNames ());
+}
+// public/a.js
+app.use (express.static ('public'));
+
+var clients = [];
+io.on ('connection', function (socket) {
+	onListChanged ();
+	clients.push (socket);
+	socket.on ('changename', function (name) {
+		socket._name = name;
+    console.log ("CHANGENAME: " + name);
+		onListChanged ();
+	});
+	socket.on ('disconnect', function () {
+		for (var i = clients.length - 1; i >= 0; --i) {
+			if (clients[i] === socket) {
+				console.log ('---[' + socket._name + ']---DISCONNECT');
+				clients.splice (i, 1);
+				onListChanged ();
+				break;
+			}
+		}
+		onListChanged ();
+	});
+
+  socket.on ('gethistorystates', function (data) {
+    var req = socket.handshake;
+    console.log ("gethistorystates: " + data.some);
+    //console.log ("REQ: " + socket.handshake.session.user.username);
+    getAllStates (socket.handshake.session.user.username, socket);
+    //socket.emit ("gethistorystatesfromserver", "DAT");
+  });
+});
+
+
+/// /comment ->> see index.html
+app.get ('/comment', function (req, res) {
+	io.emit ('comment', req.query.text);
+	console.log (req.query.text);
+	res.end ();
+});
+
+/////////
+
+
+
+
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'jade');
+app.engine ('html', require ('ejs').renderFile);
+app.set ('view engine', 'html');
+
+// uncomment after placing your favicon in /public
+//app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', routes);
+app.use('/users', users);
+app.use ('/login', routes);
+app.use ('/register', routes);
+app.use('/chat', routes);
+app.use ('/personalPage', routes);
+app.use ('/test1', routes);
+
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handlers
+
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
+  });
+}
+/*
+app.get ('/', routes.index);
+app.get ('/login', routes.login);
+app.post ('/login', routes.doLogin);
+app.get ('/register', routes.register);
+app.post ('/register', routes.doRegister);
+//routes (app);
+*/
+//mongoose
+mongoose.connect ('mongodb://localhost:27017/user_db');
+
+
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
+});
+
+
+//app.listen (3000);
+
+module.exports = app;

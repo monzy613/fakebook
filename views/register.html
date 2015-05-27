@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>Register Page<%=title%></title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <!--link rel="alternate icon" type="image/png" href="assets/i/favicon.png"-->
+  <link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.3.0/css/amazeui.min.css"/>
+  <style>
+    .header {
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 200%;
+      color: #333;
+      margin-top: 30px;
+    }
+    .header p {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="am-g">
+    <h1>fakebook注册</h1>
+  </div>
+  <hr />
+</div>
+<div class="am-g">
+  <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+
+    <br>
+
+    <form action = "/register" ng-app = "" ng-controller = "validateController" method="post" class="am-form" name = "myForm">
+
+
+      <label for = "nickname">*昵称: </label>
+      <input type = "text" name = "nickname" id = "nickname" value = "" class = "nickNameBox" ng-model = "nickname"  ng-minlength = "1" ng-maxlength = "15" required placeholder = "请输入昵称">
+      <span style="color:red" ng-show="myForm.nickname.$dirty && myForm.nickname.$invalid">
+      <span ng-show = "myForm.nickname.$error">请输入一个萌萌哒昵称</span>
+      </span><br />
+
+
+      <label for = "username">*账号: </label>
+      <input type = "text" name = "username" id = "username" value = "" class = "userNameBox" ng-model = "username"  ng-minlength = "6" ng-maxlength = "20" required placeholder = "请输入用户名">
+      <span style="color:red" ng-show="myForm.username.$dirty && myForm.username.$invalid">
+      <span ng-show = "myForm.username.$error">用户名需要6位到20位之间</span>
+      </span><br />
+
+
+      <label for="password">*密码:</label>
+      <input type="password" name="password" id="password" value="" class = "passwordBox" ng-model = "password" ng-minlength = "6" ng-maxlength = "20" required placeholder = "请输入密码">
+      <span style="color:red" ng-show="myForm.password.$dirty && myForm.password.$invalid">
+      <span ng-show = "myForm.password.$error">密码需要6位到20位之间</span>
+      </span><br />
+
+      <label for="password">*重复密码:</label>
+      <input type = "password" name="cpassword" id="cpassword" value="" class = "cpasswordBox" ng-model = "cpassword"  required placeholder = "请再次输入密码">
+      <span style="color:red" ng-show = "myForm.cpassword.$modelValue != myForm.password.$modelValue && myForm.cpassword.$dirty">两次输入不一致， 请重新输入</span>
+      <br />
+
+      <label class = "alertLabel"></label>
+      <label for="email">*邮箱:</label>
+      <input type="email" name="email" id="email" value="" ng-model = "email" required placeholder = "someone@email.com">
+      <span style = "color: red" ng-show = "myForm.email.$dirty && myForm.email.$invalid">
+      请输入正确邮箱
+      </span><br />
+
+
+
+      <label for = "qq">qq: </label>
+      <input type = "text" name = "qq" id = "qq" value = "" class = "qqBox" ng-model = "qq"  ng-minlength = "5" ng-maxlength = "11" required placeholder = "请输入qq">
+      <span style="color:red" ng-show="myForm.qq.$dirty && myForm.qq.$invalid">
+      <span ng-show = "myForm.qq.$error">请输入一个qq(不输也行)</span>
+      </span><br />
+
+
+
+      <div class="am-cf">
+        <input type="submit" name="" id = "submitButton" value="注册" class="am-btn am-btn-primary am-btn-sm am-fl" ng-disabled="myForm.nickname.$invalid || myForm.username.$invalid || (myForm.cpassword.$modelValue != myForm.password.$modelValue) || myForm.password.$invalid || myForm.email.$invalid" >
+      </div>
+    </form>
+    <hr>
+    <p>© 2014 AllMobilize, Inc. Licensed under MIT license.</p>
+  </div>
+</div>
+
+
+<script src = "/javascripts/angular.min.js"></script>
+<script>
+function validateController ($scope) {
+    $scope.username;
+    $scope.password;
+    $scope.cpassword;
+    $scope.email;
+}
+</script>
+</body>
+</html>

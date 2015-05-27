@@ -1,0 +1,9 @@
+e.g. user: admin
+
+users
+|—->albums
+    |—->1
+	|—->album_1_admin_201505211212.jpg
+    |—->2
+|—->sayings
+    |—->sayings_admin_201505211212.txt

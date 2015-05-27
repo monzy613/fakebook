@@ -1,0 +1,12 @@
+<% include header.html %>
+<h1 align = center><%= title %></h1>
+<div align = center>
+	<h2>Thanks for login, <%= title %></h2>
+    <form action = "/chat" method = "get">
+        <input type = "submit" value = "chat" class = "am-btn-primary">
+    </form>
+    <form action = "/myinfo" method = "get">
+        <input type = "submit" id="myinfo" class = "am-btn-primary">
+    </form>
+</div>
+<% include footer.html %>

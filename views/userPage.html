@@ -1,0 +1,204 @@
+<!doctype html>
+<html class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Amaze UI Admin user Examples</title>
+  <meta name="description" content="这是一个 user 页面">
+  <meta name="keywords" content="user">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--  <link rel="icon" type="image/png" href="assets/i/favicon.png">-->
+<!--  <link rel="apple-touch-icon-precomposed" href="assets/i/app-icon72x72@2x.png">-->
+  <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<!--  <link rel="stylesheet" href="assets/css/amazeui.min.css"/>-->
+<!--  <link rel="stylesheet" href="assets/css/admin.css">-->
+  <link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.3.0/css/amazeui.min.css"/>
+</head>
+<body>
+<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+
+<header class="am-topbar admin-header">
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+
+  <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+
+    <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-middle admin-header-list">
+
+      <li>
+        <a>
+          <span class="am-icon-man-o">
+            主页
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="/state">
+          <span class="am-icon-man-o">
+            状态
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:;">
+          <span class="am-icon-man-o">
+            相册
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="/chat">
+          <span class="am-icon-man-o">
+            多人聊天室
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:;">
+          <span class="am-icon-man-o">
+            附近的人
+          </span>
+        </a>
+      </li>
+
+
+    </ul>
+  </div>
+</header>
+
+<!--TEST start-->
+
+<!--TEST end-->
+
+
+<div class="am-cf admin-main">
+
+  <!-- content start -->
+  <div class="admin-content">
+
+
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">个人资料</strong> / <small>Personal information</small></div>
+    </div>
+    <hr/>
+
+    <div class="am-g">
+
+
+      <!--head img start-->
+      <div class="am-u-sm-12 am-u-md-3">
+        <div class="am-panel am-panel-default">
+          <div class="am-panel-bd">
+            <div class="am-g">
+              <div class="am-u-md-12">
+<!--                <img class="am-img-circle am-img-thumbnail" src="http://amui.qiniudn.com/bw-2014-06-19.jpg?imageView/1/w/1000/h/1000/q/80" alt=""/>-->
+                <img class="am-img-circle am-img-thumbnail" src="head_imgs/<%=head_img_name%>" alt=""/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--head img end-->
+
+
+
+
+
+      <div class="am-u-sm-12 am-u-md-8">
+        <form class="am-form am-form-horizontal">
+
+
+
+          <div class="am-form-group">
+            <label for="name" class="am-u-sm-3 am-form-label">姓名 / Name</label>
+            <div class="am-u-sm-9">
+              <input readonly type="text" class="name" id="name" value="<%=username%>">
+            </div>
+          </div>
+
+
+
+
+          <div class="am-form-group">
+            <label for="user-email" class="am-u-sm-3 am-form-label">电子邮件 / Email</label>
+            <div class="am-u-sm-9">
+              <input readonly type="email" id="user-email" value="<%=email%>">
+            </div>
+          </div>
+
+
+          <div class="am-form-group">
+            <label for="user-QQ" class="am-u-sm-3 am-form-label">QQ</label>
+            <div class="am-u-sm-9">
+              <input readonly type="email" id="user-QQ" value="<%=qq%>">
+            </div>
+          </div>
+
+
+          <div class="am-form-group">
+            <div class="am-u-sm-9 am-u-sm-push-3">
+              <button type="button" class="modify-button am-btn am-btn-primary am-fr">Login</button>
+            </div>
+          </div>
+
+
+
+<!--          <div class="am-form-group">
+            <label for="user-intro" class="am-u-sm-3 am-form-label">简介 / Intro</label>
+            <div class="am-u-sm-9">
+              <textarea class="" rows="5" id="user-intro" placeholder="输入个人简介"></textarea>
+            </div>
+          </div>
+
+
+
+
+          <div class="am-form-group">
+            <div class="am-u-sm-9 am-u-sm-push-3">
+              <button type="button" class="modify-button am-btn am-btn-primary am-fr">保存修改</button>
+            </div>
+          </div>-->
+
+
+
+
+          </form>
+        </div>
+    </div>
+  <!-- content end -->
+  </div>
+</div>
+
+<a class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+
+<footer>
+  <hr>
+  <p class="am-padding-left">fakebook Tongji</p>
+</footer>
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="assets/js/polyfill/rem.min.js"></script>
+<script src="assets/js/polyfill/respond.min.js"></script>
+<script src="assets/js/amazeui.legacy.js"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/amazeui.min.js"></script>
+<!--<![endif]-->
+<script src="assets/js/app.js"></script>
+
+<script>
+</script>
+</body>
+</html>

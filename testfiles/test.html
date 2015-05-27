@@ -1,0 +1,21 @@
+<html>
+	<body>
+		<div id="main">
+		</div>
+		<script type="text/javascript">
+			var kstr="欢迎来到JavaScript的奇妙世界！";
+			function start(){
+				td=document.getElementById("main");
+				for(var i=0;i<10;i++){
+					var vObj=document.createElement("h3");
+					vObj.style.textAlign="center";
+					vObj.style.width="800pX";
+					vObj.style.fontSize=30-2*i;
+					vObj.innerText=kstr;
+					td.appendChild(vObj);
+					}
+			}
+			start ();
+</script>
+</body>
+</html>
