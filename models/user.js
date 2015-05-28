@@ -23,8 +23,19 @@ var users_info = new mongoose.Schema ({
 
 var users_state = new mongoose.Schema ({
     _id: {type: String},
-    filenames: {type: String}
+    filenames: {type: Array}
+});
+
+var users_friend = new mongoose.Schema ({
+    _id: {type: String},
+    friends_ids: {type: Array},
+    applied_by: {type: Array},
+    appling: {type: Array}
 });
 //schemas end
 
-module.exports = [mongoose.model ('users_login', users_login), mongoose.model ('users_info', users_info), mongoose.model ('users_state', users_state)];
+module.exports = [
+mongoose.model ('users_login', users_login),
+mongoose.model ('users_info', users_info),
+mongoose.model ('users_state', users_state),
+mongoose.model ('users_friend', users_friend)];

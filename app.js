@@ -69,11 +69,10 @@ function getAllNames () {
 function getAllStates (username, socket) {
     users_state_model.find ({_id: username}, function (err, docs) {
         if (!err) {
-          var fns = docs[0].filenames;
-          if (fns === "") {
+          var filenames = docs[0].filenames;
+          if (filenames.length === 0) {
 
           } else {
-            var filenames = fns.split (',');
             var fileContents = [];
             console.log ("FILEs: " + filenames);
             for (var i = 0; i < filenames.length; ++i) {
@@ -85,6 +84,22 @@ function getAllStates (username, socket) {
             console.log ('ERROR: ' + err);
         }
     });
+}
+
+function getAllUsersNicknamed (search_key, socket) {
+  users_info_model.find ({nickname: search_key}, function (err, docs) {
+    if (!err) {
+      var usersFound = docs;
+      if (usersFound.length > 0) {
+        console.log ('USERS FIND: ' + usersFound);
+        socket.emit ('getSearchResultFromServer', usersFound);
+      } else {
+        console.log ('holy shit');
+      }
+    } else {
+      console.log ('ERROR-IN-SEARCH:' + err);
+    }
+  });
 }
 
 
@@ -119,9 +134,12 @@ io.on ('connection', function (socket) {
   socket.on ('gethistorystates', function (data) {
     var req = socket.handshake;
     console.log ("gethistorystates: " + data.some);
-    //console.log ("REQ: " + socket.handshake.session.user.username);
     getAllStates (socket.handshake.session.user.username, socket);
-    //socket.emit ("gethistorystatesfromserver", "DAT");
+  });
+
+  socket.on ('getSearchRequest', function (data) {
+    //var req = socket.handshake;
+    getAllUsersNicknamed (socket.handshake.session.search_key, socket);
   });
 });
 

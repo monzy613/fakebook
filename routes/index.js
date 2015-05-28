@@ -30,6 +30,7 @@ var currentEmail = 'dafaultEmail';
 var users_login_model = require ('../models/user')[0];
 var users_info_model = require ('../models/user')[1];
 var users_state_model = require ('../models/user')[2];
+var users_friend_model = require ('../models/user')[3];
 //models end
 
 //test1
@@ -48,28 +49,97 @@ router.route ('/sendState').post (function (req, res) {
 	users_state_model.find ({_id: req.session.user.username}, function (err, docs) {
 		//console.log ("FOUND: " + req.session.user.username);
 		filenames = docs[0].filenames;
-		var filename = "./users_things/";
-		if (filenames != "") {
-			filenames = filenames.split (',');
+		var filename = "./users_things/states/" + req.session.user.username + '/';
+		if (filenames.length !== 0) {
 			console.log ("FILENAMES: " + filenames);
 			filename += (filenames.length + "_states_of_" + req.session.user.username + ".txt");
 			filenames.push (filename);
-		} else {
-			filename += "0_states_of_" + req.session.user.username + ".txt";
-			filenames = [filename];
-		}
-		var data = req.body.state;
-		fs.writeFile (filename, data, function (err) {
-			if (!err) {
-				console.log ('WRITE SUCCESS!!!!');
-				users_state_model.update ({_id: req.session.user.username}, {$set: {filenames: filenames}}, function (err, docs) {
+			fs.writeFile (filename, req.body.state, function (err) {
+				if (!err) {
+					console.log ('WRITE SUCCESS!!!!');
+					users_state_model.update ({_id: req.session.user.username}, {$set: {filenames: filenames}}, function (err, docs) {
 
+					});
+				}
+			});
+		} else {
+			fs.mkdir (filename, function (err) {
+				if (err) {
+					console.log ("ERROR: " + err);
+				} else {
+					console.log ("success");
+				}
+				filename += "0_states_of_" + req.session.user.username + ".txt";
+				filenames = [filename];
+
+				fs.writeFile (filename, req.body.state, function (err) {
+					if (!err) {
+						console.log ('WRITE SUCCESS!!!!');
+						users_state_model.update ({_id: req.session.user.username}, {$set: {filenames: filenames}}, function (err, docs) {
+
+						});
+					}
 				});
-			}
-		});
+
+
+			});
+		}
+
 	});
 	console.log (req.body);
 });
+
+
+
+router.route ('/friendAdder').post (function (req, res) {
+	var from_whom = req.session.user.username;
+	var to_whom = req.body.user_id;
+	friendApplitor (from_whom, to_whom);
+	console.log ("Applying!" + req.body.user_id);
+});
+
+function friendApplitor (from_whom, to_whom) {
+/*
+    _id: {type: String},
+    friends_ids: {type: Array},
+    applied_by: {type: Array},
+    appling: {type: Array}
+*/
+	users_friend_model.find ({_id: from_whom}, function (err, docs) {
+		if (!err) {
+			if (docs.length !== 0) {
+				var fromer_appling = docs[0].appling;//Array
+				if (noRecurPush (fromer_appling, to_whom)) {
+					users_friend_model.update ({_id: from_whom}, {$set: {appling: fromer_appling}}, function (err, docs) {});
+				} else {
+					console.log (to_whom + " is already in appling queue of " + from_whom);
+				}
+			} else {
+				//holy shit
+			}
+		} else {
+			console.log ('[friendApplitor]ERROR: ' + err);
+		}
+	});
+
+	users_friend_model.find ({_id: to_whom}, function (err, docs) {
+		if (!err) {
+			if (docs.length !== 0) {
+				var toer_applied_by = docs[0].applied_by;
+				if (noRecurPush (toer_applied_by)) {
+					users_friend_model.update ({_id: to_whom}, {$set: {applied_by: toer_applied_by}}, function (err, docs) {});
+				} else {
+					console.log (from_whom + " is already in applied_by queue of " + to_whom);
+				}
+			} else {
+				//holy shit
+			}
+		} else {
+			console.log ('[friendApplitor]ERROR: ' + err);
+		}
+	});
+
+}
 
 
 router.get ('/userPage', function (req, res, next) {
@@ -90,6 +160,32 @@ router.get('/', function(req, res, next) {
   	res.render('index', { title: 'Home Page' });
 });
 
+
+
+
+
+//search for friend
+
+
+router.post ('/search', function (req, res) {
+	var search_key = req.body.friend;
+	console.log ("Search: " + search_key);
+	req.session.search_key = search_key;
+	// users_login_model.find ({nickname: search_key}, function (err, docs) {
+	// 	if (!err) {
+	// 		if (docs.length > 0) {
+	// 			res.end (docs);
+	// 		} else {
+	// 			console.log ("Not found");
+	// 		}
+	// 	} else {
+	// 		console.log ("query error");
+	// 	}
+	// });
+	res.render ('search');
+});
+
+//search for friend
 
 
 //userPage
@@ -166,39 +262,41 @@ router.route ('/login').get (function (req, res) {
 	console.log (req.session);
 	res.render ('login', {title: 'Login_get'});
 });
-// .post (function (req, res) {
-// 	var isInDB = false;
-// 	var username = req.body.username;
-// 	var password = req.body.password;
+/*
+.post (function (req, res) {
+	var isInDB = false;
+	var username = req.body.username;
+	var password = req.body.password;
 
-// 	users_login_model.find ({$and: [{_id: username}, {password: password}]}, function (err, docs) {
-// 		if (!err) {
-// 			if (docs != '') {
-// 				console.log ('account validation success');
-// 				currentId = username;
-// 				isLogin = true;
-// 				isInDB = true;
-// 			} else {
-// 				console.log ('account validation failed');
-// 				isLogin = false
-// 				isInDB = false;
-// 			}
-// 		} else {
-// 			isLogin = false;
-// 			console.log ('LOGIN_ERROR');
-// 		}
+	users_login_model.find ({$and: [{_id: username}, {password: password}]}, function (err, docs) {
+		if (!err) {
+			if (docs != '') {
+				console.log ('account validation success');
+				currentId = username;
+				isLogin = true;
+				isInDB = true;
+			} else {
+				console.log ('account validation failed');
+				isLogin = false
+				isInDB = false;
+			}
+		} else {
+			isLogin = false;
+			console.log ('LOGIN_ERROR');
+		}
 
-// 		if (isInDB) {
-// 			//res.render ('personalHomePage', {title: 'Login Success', username: username});
-// 			res.redirect ('/chat');
-// 			//res.render ('chat', { username: currentId });
-// 		} else {
-// 			//alert ("Wrong username or password!");
-// 			res.render ('errorPage', {title: 'ACCOUNT_PASSWORD_PROBLEM'});
-// 		}
-// 	});
+		if (isInDB) {
+			//res.render ('personalHomePage', {title: 'Login Success', username: username});
+			res.redirect ('/chat');
+			//res.render ('chat', { username: currentId });
+		} else {
+			//alert ("Wrong username or password!");
+			res.render ('errorPage', {title: 'ACCOUNT_PASSWORD_PROBLEM'});
+		}
+	});
 
-// });
+});
+*/
 
 
 router.route ('/register').get (function (req, res) {
@@ -243,7 +341,19 @@ router.route ('/register').get (function (req, res) {
 	var doc_state = {
 		_id: username,
 		filenames: new Array ()
-	}
+	};
+/*
+    _id: {type: String},
+    friends_ids: {type: Array},
+    applied_by: {type: Array},
+    appling: {type: Array}
+*/
+	var doc_friend = {
+		_id: username,
+		friends_ids: new Array (),
+		applied_by: new Array (),
+		appling: new Array ()
+	};
 
 	users_login_model.create(doc_login, function(error_login_model){
 	    if(error_login_model) {
@@ -268,8 +378,15 @@ router.route ('/register').get (function (req, res) {
 	    				if (error_state_model) {
 	    					res.render ('errorPage', {title: 'REGISTER_FAILED'});
 	    				} else {
-			    			isLogin = true;
-			    			res.render ('index', {title: (username + ' Register successed')});
+	    					users_friend_model.create (doc_friend, function (error_friend_model) {
+	    						if (error_friend_model) {
+			    					res.render ('errorPage', {title: 'REGISTER_FAILED'});
+	    						} else {
+					    			isLogin = true;
+					    			res.render ('index', {title: (username + ' Register successed')});
+	    						}
+	    					});
+
 	    				}
 	    			});
 	    		}
@@ -289,6 +406,16 @@ router.route ('/register').get (function (req, res) {
 
 function debugSession (req) {
 	console.log (req.session);
+}
+
+function noRecurPush (arr, value) {
+	for (var i = 0; i < arr.length; ++i) {
+		if (arr[i] === value) {
+			return false;
+		}
+	}
+	arr.push (value);
+	return true;
 }
 
 

@@ -25,7 +25,7 @@
 <header class="am-topbar admin-header">
   <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
 
-  <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+  <div class="am-collapse am-topbar-collapse am-u-md-6" id="topbar-collapse">
 
     <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-middle admin-header-list">
 
@@ -72,6 +72,20 @@
 
     </ul>
   </div>
+
+
+  <form action="/search" method="post" class="am-u-md-4 am-u-sm-10">
+  <div class="">
+    <div class="am-input-group am-input-group-primary">
+        <input type="text" class="am-form-field search-field" name="friend" id="friend" placeholder="寻找小伙伴">
+        <span class="am-input-group-btn">
+          <button class="am-btn am-btn-primary search-button" type="submit"><span class="am-icon-search"></span></button>
+        </span>
+    </div>
+  </div>
+  </form>
+
+
 </header>
 
 <!--TEST start-->
@@ -94,13 +108,15 @@
 
 
       <!--head img start-->
-      <div class="am-u-sm-12 am-u-md-3">
+      <div class="am-u-sm-12 am-u-md-3 am-center">
         <div class="am-panel am-panel-default">
           <div class="am-panel-bd">
             <div class="am-g">
               <div class="am-u-md-12">
-<!--                <img class="am-img-circle am-img-thumbnail" src="http://amui.qiniudn.com/bw-2014-06-19.jpg?imageView/1/w/1000/h/1000/q/80" alt=""/>-->
                 <img class="am-img-circle am-img-thumbnail" src="head_imgs/<%=head_img_name%>" alt=""/>
+              </div>
+              <div align=center>
+                <%=username%>
               </div>
             </div>
           </div>
@@ -113,24 +129,21 @@
 
 
       <div class="am-u-sm-12 am-u-md-8">
-        <form class="am-form am-form-horizontal">
 
 
 
           <div class="am-form-group">
             <label for="name" class="am-u-sm-3 am-form-label">姓名 / Name</label>
             <div class="am-u-sm-9">
-              <input readonly type="text" class="name" id="name" value="<%=username%>">
+              <label class="am-form-label"><%=username%></label>
             </div>
           </div>
-
-
 
 
           <div class="am-form-group">
             <label for="user-email" class="am-u-sm-3 am-form-label">电子邮件 / Email</label>
             <div class="am-u-sm-9">
-              <input readonly type="email" id="user-email" value="<%=email%>">
+              <label class="am-form-label"><%=email%></label>
             </div>
           </div>
 
@@ -138,40 +151,20 @@
           <div class="am-form-group">
             <label for="user-QQ" class="am-u-sm-3 am-form-label">QQ</label>
             <div class="am-u-sm-9">
-              <input readonly type="email" id="user-QQ" value="<%=qq%>">
+              <label class="am-form-label"><%=qq%></label>
             </div>
           </div>
 
 
-          <div class="am-form-group">
+<!--           <div class="am-form-group">
             <div class="am-u-sm-9 am-u-sm-push-3">
               <button type="button" class="modify-button am-btn am-btn-primary am-fr">Login</button>
             </div>
-          </div>
+          </div> -->
 
-
-
-<!--          <div class="am-form-group">
-            <label for="user-intro" class="am-u-sm-3 am-form-label">简介 / Intro</label>
-            <div class="am-u-sm-9">
-              <textarea class="" rows="5" id="user-intro" placeholder="输入个人简介"></textarea>
-            </div>
-          </div>
-
-
-
-
-          <div class="am-form-group">
-            <div class="am-u-sm-9 am-u-sm-push-3">
-              <button type="button" class="modify-button am-btn am-btn-primary am-fr">保存修改</button>
-            </div>
-          </div>-->
-
-
-
-
-          </form>
         </div>
+
+
     </div>
   <!-- content end -->
   </div>
