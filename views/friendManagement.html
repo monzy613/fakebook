@@ -1,0 +1,242 @@
+<% include header.html %>
+
+<header class="am-topbar admin-header">
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only am-fl" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+
+  <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+
+    <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-middle admin-header-list">
+
+      <li>
+        <a href="/userPage">
+          <span class="am-icon-man-o">
+            主页
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a>
+          <span class="am-icon-man-o">
+            状态
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="/album">
+          <span class="am-icon-man-o">
+            相册
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="/chat">
+          <span class="am-icon-man-o">
+            多人聊天室
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:;">
+          <span class="am-icon-man-o">
+            附近的人
+          </span>
+        </a>
+      </li>
+
+
+    </ul>
+  </div>
+</header>
+
+
+
+
+
+
+
+<div class="am-cf admin-main">
+
+  <!-- content start -->
+  <div class="admin-content">
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">好友申请</strong> / <small>Friend Apply</small></div>
+      <div class="am-fr am-cf">
+        <input type="button" class="statebutton modify-button am-btn am-btn-primary am-fr am-show-sm-only" value="State"
+        data-am-collapse="{target: '#statefield-collapse'}"></div>
+
+<!--button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button-->
+
+
+    </div>
+    <hr/>
+
+
+      <div class="am-u-md-12">
+        <ul class="am-comments-list" id="applylist">
+
+
+
+
+
+
+
+
+
+
+        </ul>
+      </div>
+
+
+
+    <hr/>
+  </div>
+  <!-- content end -->
+</div>
+
+
+
+
+
+
+
+
+
+<footer>
+  <br/>
+  <hr>
+  <p class="am-padding-left" align=center>fakebook Tongji</p>
+</footer>
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="assets/js/polyfill/rem.min.js"></script>
+<script src="assets/js/polyfill/respond.min.js"></script>
+<script src="assets/js/amazeui.legacy.js"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/amazeui.min.js"></script>
+<!--<![endif]-->
+<script src="assets/js/app.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+
+<script>
+var socket = io ("http://localhost:3000");
+var appliers_ids = [];
+socket.on ('connect', function () {
+  socket.emit ('friendManagement', {some: "friendManagement"});
+});
+
+socket.on ('getAppliersIDFromServer', function (data) {
+    console.log (data);
+    appliers_ids = data;
+    if (appliers_ids.length === 0) {
+        doWhenNoApply ();
+    } else {
+        initAppliersList ();
+    }
+});
+
+
+/*
+
+
+            <li class="am-g am-u-sm-centered am-u-sm-6">
+              <div class="am-panel am-panel-default am-cf">
+                <div class="am-panel-bd am-u-sm-3">
+                  <img class="am-img-circle am-img-thumbnail" src="head_imgs/head_test.png" alt=""/>
+                </div>
+                <div class="am-panel-bd am-u-sm-9">
+                    <h3 class="am-panel-title am-u-md-12" >monzy613</h3>
+                    <button class="modify-button am-btn am-btn-primary am-u-sm-12">接收</button>
+                    <button class="modify-button am-btn am-btn-warning am-u-sm-12">拒绝</button>
+                </div>
+              </div>
+            </li>
+
+
+*/
+
+
+function addApplierList (applierID, headImage) {
+
+    td = document.getElementById('applylist');
+    var liObj = document.createElement('li');
+    liObj.setAttribute("class", 'am-g am-u-sm-centered am-u-sm-6');
+    var div = document.createElement('div');
+    div.setAttribute('class', 'am-panel am-panel-default am-cf');
+
+    var imgDiv = document.createElement('div');
+    imgDiv.setAttribute('class', 'am-panel-bd am-u-sm-3');
+
+    var img = document.createElement('img');
+    img.setAttribute('class', 'am-img-circle am-img-thumbnail');
+    img.setAttribute('src', headImage);
+    img.setAttribute('alt', "");
+
+    var buttonDiv = document.createElement('div');
+    buttonDiv.setAttribute('class', 'am-panel-bd am-u-sm-9');
+
+    var h3 = document.createElement('h3');
+    h3.setAttribute('class', 'am-panel-title am-u-md-12');
+    h3.innerText = applierID;
+
+    var acceptButton = document.createElement('button');
+    acceptButton.setAttribute('class', 'modify-button am-btn am-btn-primary am-u-sm-12');
+    acceptButton.setAttribute('data-id', applierID);
+    acceptButton.setAttribute('onclick', 'acceptButtonPressed(this)');
+    acceptButton.innerHTML = "接受";
+
+    var declineButton = document.createElement('button');
+    declineButton.setAttribute('class', 'modify-button am-btn am-btn-default am-u-sm-12');
+    declineButton.setAttribute('data-id', applierID);
+    declineButton.setAttribute('onclick', 'declineButtonPressed(this)');
+    declineButton.innerHTML = "拒绝";
+
+    buttonDiv.appendChild(h3);
+    buttonDiv.appendChild(acceptButton);
+    buttonDiv.appendChild(declineButton);
+
+    imgDiv.appendChild(img);
+
+    div.appendChild(imgDiv);
+    div.appendChild(buttonDiv);
+    liObj.appendChild(div);
+    td.appendChild(liObj);
+}
+
+function doWhenNoApply () {
+    alert ('no applier!');
+}
+
+function acceptButtonPressed (acceptBtn) {
+  var id = acceptBtn.getAttribute('data-id');
+  $.post ('/acceptFriendApply', {applierID: id}, function (data) {console.log ('accept: ' + data);});
+  //$.post ('/friendAdder', {user_id: id}, function (data) {console.log ("addFriend: " + data);});
+  //alert ('已向' + pressedBtn.getAttribute('data-id') + '申请好友');
+  location.reload ();
+}
+
+function declineButtonPressed (declineBtn) {
+    var id = declineBtn.getAttribute('data-id');
+    alert ('decline');
+}
+
+
+function initAppliersList () {
+  for (var i = 0; i < appliers_ids.length; i++) {
+    addApplierList (appliers_ids[i], 'head_imgs/head_test.png');
+  }
+}
+
+
+</script>
+</body>
+</html>

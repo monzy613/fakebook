@@ -12,6 +12,7 @@ var session = require ('express-session');
 var users_login_model = require ('./models/user')[0];
 var users_info_model = require ('./models/user')[1];
 var users_state_model = require ('./models/user')[2];
+var users_friend_model = require ('./models/user')[3];
 
 
 var routes = require ('./routes/index');
@@ -102,6 +103,22 @@ function getAllUsersNicknamed (search_key, socket) {
   });
 }
 
+function getAllFriendApply (username, socket) {
+  users_friend_model.find ({_id: username}, function (err, docs) {
+    if (!err) {
+      if (docs.length !== 0) {
+        var applied_by = docs[0].applied_by;
+        console.log ("APPLIED_BY: " + applied_by);
+        socket.emit ('getAppliersIDFromServer', applied_by);
+      } else {
+        console.log (username + ' not found in users_friend_model');
+      }
+    } else {
+      console.log ('ERROR_FROM_[getAllFriendApply] ' + err);
+    }
+  });
+}
+
 
 
 function onListChanged () {
@@ -132,7 +149,6 @@ io.on ('connection', function (socket) {
 	});
 
   socket.on ('gethistorystates', function (data) {
-    var req = socket.handshake;
     console.log ("gethistorystates: " + data.some);
     getAllStates (socket.handshake.session.user.username, socket);
   });
@@ -140,6 +156,10 @@ io.on ('connection', function (socket) {
   socket.on ('getSearchRequest', function (data) {
     //var req = socket.handshake;
     getAllUsersNicknamed (socket.handshake.session.search_key, socket);
+  });
+
+  socket.on ('friendManagement', function (data) {
+    getAllFriendApply (socket.handshake.session.user.username, socket);
   });
 });
 

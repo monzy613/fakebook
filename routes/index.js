@@ -41,7 +41,7 @@ router.get ('/test1', function (req, res, next) {
 router.route ('/state').get (function (req, res) {
 	res.render ('state');
 }).post (function (req, res) {
-	console.log (req);
+	//console.log (req);
 });
 
 router.route ('/sendState').post (function (req, res) {
@@ -89,6 +89,59 @@ router.route ('/sendState').post (function (req, res) {
 	console.log (req.body);
 });
 
+router.route ('/acceptFriendApply').post (function (req, res) {
+	var accepter = req.session.user.username;
+	var applier = req.body.applierID;
+	console.log (req.session.user.username + ' accepted the friend apply of ' + req.body.applierID);
+	friendAccepter (accepter, applier);
+});
+
+function friendAccepter (accepter, applier) {
+	users_friend_model.find ({_id: accepter}, function (err, docs) {
+		if (!err) {
+			if (docs.length !== 0) {
+				var friends_ids = docs[0].friends_ids;
+				if (noRecurPush (friends_ids, applier)) {
+					var new_applied_by = docs[0].applied_by.filter(function (xid) {return xid !== applier;});
+					users_friend_model.update ({_id: accepter}, {$set: {friends_ids: friends_ids, applied_by: new_applied_by}}, function (err, docs) {});
+					console.log ('ACCEPTED!!!!!');
+				} else {
+					//do nothing
+				}
+			} else {
+				console.log (accepter + ' not found');
+			}
+		} else {
+			console.log (err);
+		}
+	});
+
+	users_friend_model.find ({_id: applier}, function (err, docs) {
+		if (!err) {
+			if (docs.length !== 0) {
+				var friends_ids = docs[0].friends_ids;
+				if (noRecurPush (friends_ids, accepter)) {
+					var new_appling = docs[0].appling.filter(function (xid) {return xid !== accepter;});
+					users_friend_model.update ({_id: applier}, {$set: {friends_ids: friends_ids, appling: new_appling}}, function (err, docs) {});
+					console.log ('BEING ACCEPTED!!!!!!');
+				} else {
+					//do nothing
+				}
+			} else {
+
+			}
+		} else {
+
+		}
+	});
+}
+
+
+router.route ('/friendManagement').get (function (req, res) {
+	console.log ('friendManagement');
+	res.render ('friendManagement');
+});
+
 
 
 router.route ('/friendAdder').post (function (req, res) {
@@ -110,7 +163,11 @@ function friendApplitor (from_whom, to_whom) {
 			if (docs.length !== 0) {
 				var fromer_appling = docs[0].appling;//Array
 				if (noRecurPush (fromer_appling, to_whom)) {
-					users_friend_model.update ({_id: from_whom}, {$set: {appling: fromer_appling}}, function (err, docs) {});
+					if (fromer_appling === null) {
+						console.log ('Fromer_appling');
+					} else {
+						users_friend_model.update ({_id: from_whom}, {$set: {appling: fromer_appling}}, function (err, docs) {});
+					}
 				} else {
 					console.log (to_whom + " is already in appling queue of " + from_whom);
 				}
@@ -126,8 +183,12 @@ function friendApplitor (from_whom, to_whom) {
 		if (!err) {
 			if (docs.length !== 0) {
 				var toer_applied_by = docs[0].applied_by;
-				if (noRecurPush (toer_applied_by)) {
-					users_friend_model.update ({_id: to_whom}, {$set: {applied_by: toer_applied_by}}, function (err, docs) {});
+				if (noRecurPush (toer_applied_by, from_whom)) {
+					if (toer_applied_by === null) {
+						console.log ('Toer_applied_by');
+					} else {
+						users_friend_model.update ({_id: to_whom}, {$set: {applied_by: toer_applied_by}}, function (err, docs) {});
+					}
 				} else {
 					console.log (from_whom + " is already in applied_by queue of " + to_whom);
 				}
@@ -155,7 +216,6 @@ router.get ('/userPage', function (req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	console.log (req);
 	//console.log(req.cookies);
   	res.render('index', { title: 'Home Page' });
 });
@@ -222,7 +282,7 @@ router.route ('/personalPage').post (function (req, res) {
 			if (docs != '') {
 
 				requestIDs.push (docs[0]);
-				console.log ("info: " + docs[0]);
+				//console.log ("info: " + docs[0]);
 				req.session.user = {
 					username: docs[0]._id,
 					nickname: docs[0].nickname,
@@ -259,7 +319,7 @@ router.route ('/personalPage').post (function (req, res) {
 });
 
 router.route ('/login').get (function (req, res) {
-	console.log (req.session);
+	// console.log (req.session);
 	res.render ('login', {title: 'Login_get'});
 });
 /*

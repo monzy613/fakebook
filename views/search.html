@@ -62,7 +62,7 @@
   <!-- content start -->
   <div class="admin-content">
     <div class="am-cf am-padding">
-      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">状态</strong> / <small>State</small></div>
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">查找用户</strong> / <small>Find</small></div>
       <div class="am-fr am-cf">
         <input type="button" class="statebutton modify-button am-btn am-btn-primary am-fr am-show-sm-only" value="State"
         data-am-collapse="{target: '#statefield-collapse'}"></div>
@@ -148,10 +148,10 @@ socket.on ('getSearchResultFromServer', function (data) {
 function addResultList (nickname, _id, headImage, number) {
   td = document.getElementById('searchlist');
   var liObj = document.createElement('li');
-  if ((number + 1) % 4 !== 0 && number === (search_result.length)) {
-    liObj.setAttribute('class', 'am-g am-u-md-3 am-u-end');
+  if ((number + 1) % 4 !== 0 && ((number + 1) === (search_result.length))) {
+    liObj.setAttribute('class', 'am-g am-u-sm-4 am-u-md-3 am-u-end');
   } else {
-    liObj.setAttribute("class", 'am-g am-u-md-3');
+    liObj.setAttribute("class", 'am-g am-u-sm-4 am-u-md-3');
   }
   var div1 = document.createElement('div');
   div1.setAttribute('class', 'am-panel am-panel-default am-cf');
@@ -162,16 +162,16 @@ function addResultList (nickname, _id, headImage, number) {
   img.setAttribute('src', headImage);
   img.setAttribute('alt', "");
 
-  var h3 = document.createElement('h3');
-  h3.setAttribute('class', 'am-panel-title am-u-md-12');
-  h3.innerText = nickname;
+  var span = document.createElement('span');
+  span.setAttribute('class', 'am-u-md-6 am-u-sm-centered am-u-end');
+  span.innerText = nickname;
 
   var div3 = document.createElement('div');
-  div3.setAttribute('class', 'am-panel-bd');
+  div3.setAttribute('class', 'am-panel-bd am-u-sm-centered');
   var div4 = document.createElement('div');
   div4.setAttribute('class', 'am-panel');
   var btn = document.createElement('button');
-  btn.setAttribute('class', 'modify-button am-btn am-btn-primary am-u-md-12 am-padding-vertical-xs');
+  btn.setAttribute('class', 'modify-button am-btn am-btn-primary am-u-sm-12 am-padding-vertical-xs');
   btn.setAttribute('data-id', _id);
   btn.setAttribute('onclick', "addButtonPressed(this)");
   btn.innerText = "加为好友";
@@ -180,7 +180,7 @@ function addResultList (nickname, _id, headImage, number) {
   div3.appendChild(div4);
 
   div2.appendChild(img);
-  div2.appendChild(h3);
+  div2.appendChild(span);
   div1.appendChild(div2);
   div1.appendChild(div3);
 
