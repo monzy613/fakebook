@@ -90,19 +90,28 @@ router.route ('/sendState').post (function (req, res) {
 });
 
 router.route ('/acceptFriendApply').post (function (req, res) {
-	var accepter = req.session.user.username;
-	var applier = req.body.applierID;
+	//{user_id: id, user_nickname: nickname}
+
+	var accepter = {
+		_id: req.session.user.username,
+		nickname: req.session.user.nickname
+	};
+
+	var applier = {
+		_id: req.body.user_id,
+		nickname: req.body.user_nickname
+	};
 	console.log (req.session.user.username + ' accepted the friend apply of ' + req.body.applierID);
 	friendAccepter (accepter, applier);
 });
 
 function friendAccepter (accepter, applier) {
-	users_friend_model.find ({_id: accepter}, function (err, docs) {
+	users_friend_model.find ({_id: accepter._id}, function (err, docs) {
 		if (!err) {
 			if (docs.length !== 0) {
 				var friends_ids = docs[0].friends_ids;
-				if (noRecurPush (friends_ids, applier)) {
-					var new_applied_by = docs[0].applied_by.filter(function (xid) {return xid !== applier;});
+				if (noRecurPushObj (friends_ids, applier)) {
+					var new_applied_by = docs[0].applied_by.filter(function (xid) {return !deepEqual (xid, applier);});
 					users_friend_model.update ({_id: accepter}, {$set: {friends_ids: friends_ids, applied_by: new_applied_by}}, function (err, docs) {});
 					console.log ('ACCEPTED!!!!!');
 				} else {
@@ -116,12 +125,12 @@ function friendAccepter (accepter, applier) {
 		}
 	});
 
-	users_friend_model.find ({_id: applier}, function (err, docs) {
+	users_friend_model.find ({_id: applier._id}, function (err, docs) {
 		if (!err) {
 			if (docs.length !== 0) {
 				var friends_ids = docs[0].friends_ids;
-				if (noRecurPush (friends_ids, accepter)) {
-					var new_appling = docs[0].appling.filter(function (xid) {return xid !== accepter;});
+				if (noRecurPushObj (friends_ids, accepter)) {
+					var new_appling = docs[0].appling.filter(function (xid) {return !deepEqual (xid, accepter);});
 					users_friend_model.update ({_id: applier}, {$set: {friends_ids: friends_ids, appling: new_appling}}, function (err, docs) {});
 					console.log ('BEING ACCEPTED!!!!!!');
 				} else {
@@ -145,10 +154,19 @@ router.route ('/friendManagement').get (function (req, res) {
 
 
 router.route ('/friendAdder').post (function (req, res) {
-	var from_whom = req.session.user.username;
-	var to_whom = req.body.user_id;
+
+
+	var from_whom = {
+		_id: req.session.user.username,
+		nickname: req.session.user.nickname
+	};
+	var to_whom = {
+		_id: req.body.user_id,
+		nickname: req.body.user_nickname
+	};
+
 	friendApplitor (from_whom, to_whom);
-	console.log ("Applying!" + req.body.user_id);
+	console.log ("Applying!" + to_whom);
 });
 
 function friendApplitor (from_whom, to_whom) {
@@ -158,11 +176,11 @@ function friendApplitor (from_whom, to_whom) {
     applied_by: {type: Array},
     appling: {type: Array}
 */
-	users_friend_model.find ({_id: from_whom}, function (err, docs) {
+	users_friend_model.find ({_id: from_whom._id}, function (err, docs) {
 		if (!err) {
 			if (docs.length !== 0) {
 				var fromer_appling = docs[0].appling;//Array
-				if (noRecurPush (fromer_appling, to_whom)) {
+				if (noRecurPushObj (fromer_appling, to_whom)) {
 					if (fromer_appling === null) {
 						console.log ('Fromer_appling');
 					} else {
@@ -179,11 +197,11 @@ function friendApplitor (from_whom, to_whom) {
 		}
 	});
 
-	users_friend_model.find ({_id: to_whom}, function (err, docs) {
+	users_friend_model.find ({_id: to_whom._id}, function (err, docs) {
 		if (!err) {
 			if (docs.length !== 0) {
 				var toer_applied_by = docs[0].applied_by;
-				if (noRecurPush (toer_applied_by, from_whom)) {
+				if (noRecurPushObj (toer_applied_by, from_whom)) {
 					if (toer_applied_by === null) {
 						console.log ('Toer_applied_by');
 					} else {
@@ -217,7 +235,8 @@ router.get ('/userPage', function (req, res, next) {
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	//console.log(req.cookies);
-  	res.render('index', { title: 'Home Page' });
+  	//res.render('index', { title: 'Home Page' });
+  	res.render ('fakebook');
 });
 
 
@@ -476,6 +495,48 @@ function noRecurPush (arr, value) {
 	}
 	arr.push (value);
 	return true;
+}
+
+function noRecurPushObj (arr, obj) {
+	for (var i = 0; i < arr.length; ++i) {
+		if (deepEqual (arr[i], obj) ) {
+			return false;
+		}
+	}
+	arr.push (obj);
+	return true;
+}
+
+
+function deepEqual(a, b) {
+    if (a === b) {
+        return true;
+    }
+    if (a === null || b === null) {
+        return false;
+    }
+    for (var k1 in a) {
+        if (!(k1 in b)) {
+            return false;
+        }
+    }
+    for (var k2 in b) {
+        if (!(k2 in a)) {
+            return false;
+        }
+    }
+    for (var k in a) {
+        if (typeof a[k] === 'object' && typeof b[k] === 'object') {
+            if (!deepEqual(a[k], b[k])) {
+                return false;
+            }
+        } else {
+            if (a[k] !== b[k]) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 

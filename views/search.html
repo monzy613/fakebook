@@ -173,6 +173,7 @@ function addResultList (nickname, _id, headImage, number) {
   var btn = document.createElement('button');
   btn.setAttribute('class', 'modify-button am-btn am-btn-primary am-u-sm-12 am-padding-vertical-xs');
   btn.setAttribute('data-id', _id);
+  btn.setAttribute('data-nickname', nickname);
   btn.setAttribute('onclick', "addButtonPressed(this)");
   btn.innerText = "加为好友";
 
@@ -190,7 +191,8 @@ function addResultList (nickname, _id, headImage, number) {
 
 function addButtonPressed (pressedBtn) {
   var id = pressedBtn.getAttribute('data-id');
-  $.post ('/friendAdder', {user_id: id}, function (data) {console.log ("addFriend: " + data);});
+  var nickname = pressedBtn.getAttribute('data-nickname');
+  $.post ('/friendAdder', {user_id: id, user_nickname: nickname}, function (data) {console.log ("addFriend: " + data);});
   alert ('已向' + pressedBtn.getAttribute('data-id') + '申请好友');
 }
 

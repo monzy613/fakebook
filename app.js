@@ -119,6 +119,22 @@ function getAllFriendApply (username, socket) {
   });
 }
 
+function getAllFriendsOf (username, socket) {
+  users_friend_model.find ({_id: username}, function (err, docs) {
+    if (!err) {
+      if (docs.length !== 0) {
+        var friends = docs[0].friends_ids;
+        console.log ("Friends: " + friends);
+        socket.emit ('getFriendListFromServer', friends);
+      } else {
+        console.log (username + ' not found in users_friend_model');
+      }
+    } else {
+      console.log ('ERROR_FROM_[getAllFriendsOf] ' + err);
+    }
+  });
+}
+
 
 
 function onListChanged () {
@@ -160,6 +176,10 @@ io.on ('connection', function (socket) {
 
   socket.on ('friendManagement', function (data) {
     getAllFriendApply (socket.handshake.session.user.username, socket);
+  });
+
+  socket.on ('getFriendList', function (data) {
+    getAllFriendsOf (socket.handshake.session.user.username, socket);
   });
 });
 

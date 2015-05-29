@@ -129,15 +129,15 @@
 
 <script>
 var socket = io ("http://localhost:3000");
-var appliers_ids = [];
+var appliers = [];
 socket.on ('connect', function () {
   socket.emit ('friendManagement', {some: "friendManagement"});
 });
 
 socket.on ('getAppliersIDFromServer', function (data) {
-    console.log (data);
-    appliers_ids = data;
-    if (appliers_ids.length === 0) {
+    console.log ("DATA: " + data);
+    appliers = data;
+    if (appliers.length === 0) {
         doWhenNoApply ();
     } else {
         initAppliersList ();
@@ -165,7 +165,7 @@ socket.on ('getAppliersIDFromServer', function (data) {
 */
 
 
-function addApplierList (applierID, headImage) {
+function addApplierList (applier, headImage) {
 
     td = document.getElementById('applylist');
     var liObj = document.createElement('li');
@@ -186,17 +186,19 @@ function addApplierList (applierID, headImage) {
 
     var h3 = document.createElement('h3');
     h3.setAttribute('class', 'am-panel-title am-u-md-12');
-    h3.innerText = applierID;
+    h3.innerText = applier.nickname;
 
     var acceptButton = document.createElement('button');
     acceptButton.setAttribute('class', 'modify-button am-btn am-btn-primary am-u-sm-12');
-    acceptButton.setAttribute('data-id', applierID);
+    acceptButton.setAttribute('data-id', applier._id);
+    acceptButton.setAttribute('data-nickname', applier.nickname);
     acceptButton.setAttribute('onclick', 'acceptButtonPressed(this)');
     acceptButton.innerHTML = "接受";
 
     var declineButton = document.createElement('button');
     declineButton.setAttribute('class', 'modify-button am-btn am-btn-default am-u-sm-12');
-    declineButton.setAttribute('data-id', applierID);
+    declineButton.setAttribute('data-id', applier._id);
+    declineButton.setAttribute('data-nickname', applier.nickname);
     declineButton.setAttribute('onclick', 'declineButtonPressed(this)');
     declineButton.innerHTML = "拒绝";
 
@@ -218,7 +220,8 @@ function doWhenNoApply () {
 
 function acceptButtonPressed (acceptBtn) {
   var id = acceptBtn.getAttribute('data-id');
-  $.post ('/acceptFriendApply', {applierID: id}, function (data) {console.log ('accept: ' + data);});
+  var nickname = acceptBtn.getAttribute('data-nickname');
+  $.post ('/acceptFriendApply', {user_id: id, user_nickname: nickname}, function (data) {console.log ('accept: ' + data);});
   //$.post ('/friendAdder', {user_id: id}, function (data) {console.log ("addFriend: " + data);});
   //alert ('已向' + pressedBtn.getAttribute('data-id') + '申请好友');
   location.reload ();
@@ -231,8 +234,8 @@ function declineButtonPressed (declineBtn) {
 
 
 function initAppliersList () {
-  for (var i = 0; i < appliers_ids.length; i++) {
-    addApplierList (appliers_ids[i], 'head_imgs/head_test.png');
+  for (var i = 0; i < appliers.length; i++) {
+    addApplierList (appliers[i], 'head_imgs/head_test.png');
   }
 }
 

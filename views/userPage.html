@@ -203,6 +203,8 @@
       <div id="friend-side-bar" class="am-offcanvas">
         <div class="am-offcanvas-bar">
           <div class="am-offcanvas-content">
+            <ul class="am-list" id="friendlist">
+            </ul>
           </div>
         </div>
       </div>
@@ -235,8 +237,121 @@
 <script src="assets/js/amazeui.min.js"></script>
 <!--<![endif]-->
 <script src="assets/js/app.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 
 <script>
+var socket = io ('http://localhost:3000');
+var friends = [];
+
+socket.on ('connect', function () {
+  socket.emit ('getFriendList', {some: 'friendList'});
+});
+
+socket.on ('getFriendListFromServer', function (data) {
+  friends = data;
+  if (friends.length === 0) {
+
+  } else {
+    initFriendList ();
+  }
+});
+
+
+
+
+
+
+
+/*
+              <li>
+                <div class="am-u-sm-12 am-panel">
+                  <div class="am-panel-bd am-u-sm-6">
+                    <div class="am-g">
+
+                      <div class="am-u-md-12">
+                        <img class="am-img-circle am-img-thumbnail" src="head_imgs/<%=head_img_name%>" alt=""/>
+                      </div>
+                      <div class="am-badge am-badge-secondary am-u-centered">
+                        <%=username%>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="buttongroup am-u-sm-6 am-panel-bd">
+                    <button class="am-u-sm-12 am-btn am-btn-primary am-margin-bottom">唠嗑</button>
+                    <button class="am-u-sm-12 am-btn am-btn-danger">友尽</button>
+                  </div>
+                </div>
+              </li>
+*/
+
+
+
+
+function addFriendList (friend, headImg) {
+  td = document.getElementById('friendlist');
+  var li = document.createElement('li');
+
+  var div = document.createElement('div');
+  div.setAttribute('class', 'am-u-sm-12 am-panel');
+
+  var div1 = document.createElement('div');
+  div1.setAttribute('class', 'am-panel-bd am-u-sm-6');
+
+  var div11 = document.createElement('div');
+  div11.setAttribute('class', 'am-g');
+
+  var div111 = document.createElement('div');
+  div111.setAttribute('class', 'am-u-sm-12');
+
+  var img = document.createElement('img');
+  img.setAttribute('class', 'am-img-circle am-img-thumbnail');
+  img.setAttribute('src', headImg);
+
+  var div112 = document.createElement('div');
+  div112.setAttribute('class', 'am-badge am-badge-secondary am-u-centered');
+  div112.innerHTML = friend.nickname;
+
+  var div2 = document.createElement('div');
+  div2.setAttribute('class', 'am-u-sm-6 am-panel-bd');
+
+  var chatButton = document.createElement('button');
+  chatButton.setAttribute('class', 'am-u-sm-12 am-btn am-btn-primary am-margin-bottom');
+  chatButton.setAttribute('data-id', friend._id);
+  chatButton.setAttribute('data-nickname', friend.nickname);
+  chatButton.innerHTML = "唠嗑";
+
+  var deleteFriendButton = document.createElement('button');
+  deleteFriendButton.setAttribute('class', 'am-u-sm-12 am-btn am-btn-danger');
+  deleteFriendButton.setAttribute('data-id', friend._id);
+  deleteFriendButton.setAttribute('data-nickname', friend.nickname);
+  deleteFriendButton.innerHTML = "友尽";
+
+  div2.appendChild(chatButton);
+  div2.appendChild(deleteFriendButton);
+
+  div111.appendChild(img);
+
+  div11.appendChild(div111);
+  div11.appendChild(div112);
+
+  div1.appendChild(div11);
+
+  div.appendChild(div1);
+  div.appendChild(div2);
+
+  li.appendChild(div);
+  td.appendChild(li);
+}
+
+
+function initFriendList () {
+  for (var i in friends) {
+    addFriendList (friends[i], 'head_imgs/head_test.png');
+  }
+}
+
+
 </script>
 </body>
 </html>
