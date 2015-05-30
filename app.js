@@ -193,6 +193,20 @@ app.get ('/comment', function (req, res) {
 
 /////////
 
+app.post ('/p2pchat', function (req, res) {
+  var p2pchat_packege = {
+    from_id: req.session.user.username,
+    to_id: req.body.friendID,
+    msg: req.body.msg
+  };
+  console.log (p2pchat_packege.from_id);
+  io.emit ('getMessage-' + p2pchat_packege.to_id, p2pchat_packege);
+  io.emit ('getMessage-' + p2pchat_packege.from_id, p2pchat_packege);
+});
+
+
+///////////
+
 
 
 

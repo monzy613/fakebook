@@ -124,7 +124,7 @@
 <div class="am-cf admin-main">
 
   <!-- content start -->
-  <div class="admin-content">
+  <div class="admin-content" id="maindiv">
 
 
     <div class="am-cf am-padding">
@@ -199,6 +199,8 @@
 
 
 
+
+
       <!-- 侧边栏内容 -->
       <div id="friend-side-bar" class="am-offcanvas">
         <div class="am-offcanvas-bar">
@@ -242,6 +244,7 @@
 <script>
 var socket = io ('http://localhost:3000');
 var friends = [];
+var currentChatID = 'monzy123';
 
 socket.on ('connect', function () {
   socket.emit ('getFriendList', {some: 'friendList'});
@@ -254,6 +257,26 @@ socket.on ('getFriendListFromServer', function (data) {
   } else {
     initFriendList ();
   }
+});
+
+
+socket.on ('getMessage-<%=username%>', function (data) {
+    var msg = data.from_id + ': ' + data.msg;
+    console.log (data);
+
+    if (data.from_id === '<%=username%>') {
+      if ($('.chatarea-' + data.to_id).val () !== '') {
+        $('.chatarea-' + data.to_id).val ($('.chatarea-' + data.to_id).val() + '\n' + msg);
+      } else {
+        $('.chatarea-' + data.to_id).val (msg);
+      }
+    } else if (data.to_id === '<%=username%>') {
+      if ($('.chatarea-' + data.from_id).val () !== '') {
+        $('.chatarea-' + data.from_id).val ($('.chatarea-' + data.from_id).val() + '\n' + msg);
+      } else {
+        $('.chatarea-' + data.from_id).val (msg);
+      }
+    }
 });
 
 
@@ -319,6 +342,8 @@ function addFriendList (friend, headImg) {
   chatButton.setAttribute('class', 'am-u-sm-12 am-btn am-btn-primary am-margin-bottom');
   chatButton.setAttribute('data-id', friend._id);
   chatButton.setAttribute('data-nickname', friend.nickname);
+  //chatButton.setAttribute('data-am-modal', '{target: "#doc-modal-chatwindow-' + friend.nickname +  '", closeViaDimmer: 0, width: 400, height: 225}');
+  chatButton.setAttribute('onclick', 'initChat(this)');
   chatButton.innerHTML = "唠嗑";
 
   var deleteFriendButton = document.createElement('button');
@@ -350,6 +375,132 @@ function initFriendList () {
     addFriendList (friends[i], 'head_imgs/head_test.png');
   }
 }
+
+
+
+
+
+
+
+/*
+div<div class="am-modal am-modal-no-btn" tabindex="-1" id="doc-modal-chatwindow-monzy123">
+
+
+  div1<div class="am-modal-dialog">
+
+    div11<div class="am-modal-hd">
+      <small>monzy613</small>
+      <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+    </div>
+
+
+    div12<div class="am-modal-bd am-cf">
+      div121<div class="am-u-sm-12">
+        <textarea class="chatarea am-u-sm-12" rows="5">nothing</textarea>
+        <input type=text class="am-u-sm-10 am-margin-top-xs" style="height:30px">
+        <button class="am-u-sm-2 am-btn am-btn-primary am-margin-top-xs" style="height:30px"  onclick="send()">Go</button>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+*/
+
+
+function send (friendID) {
+  var msg = $('.msgarea-' + friendID).val();
+  $('.msgarea-' + friendID).val('');
+  var send_package = {
+    friendID: friendID,
+    msg: msg
+  };
+  $.post ('/p2pchat', send_package);
+  console.log ('send to ' + friendID + " " + send_package.msg);
+}
+
+
+function initChat(btn) {
+  var friendID = btn.getAttribute('data-id');
+  currentChatID = friendID;
+  console.log ('new chat with ' + currentChatID);
+  btn.setAttribute('data-am-modal', '{target: "#doc-modal-chatwindow-' + friendID +  '", closeViaDimmer: 0, width: 400, height: 225}');
+
+  tm = document.getElementById('maindiv');
+
+  var div = document.createElement('div');
+  div.setAttribute('class', 'am-modal am-modal-no-btn');
+  div.setAttribute('tabindex', '-1');
+  div.setAttribute('id', 'doc-modal-chatwindow-' + friendID);
+
+  var div1 = document.createElement('div');
+  div1.setAttribute('class', 'am-modal-dialog');
+
+  var div11 = document.createElement('div');
+  div11.setAttribute('class', 'am-modal-hd');
+
+  var small = document.createElement('small');
+  small.innerHTML = friendID;
+
+
+  var a = document.createElement('a');
+  a.setAttribute('href', 'javascript: void(0)');
+  a.setAttribute('class', 'am-close am-close-spin');
+  //a.setAttributeNode('data-am-modal-close');
+  a.setAttribute('data-am-modal-close', '');
+  a.setAttribute('onclick', 'deleteChatWith("' + friendID + '")');
+  a.innerHTML = '&times;';
+
+  var div12 = document.createElement('div');
+  div12.setAttribute('class', 'am-modal-bd');
+
+  var div121 = document.createElement('div');
+  div121.setAttribute('class', 'am-u-sm-12');
+
+  var chatarea = document.createElement('textarea');
+  chatarea.setAttribute('class', 'am-u-sm-12 chatarea-' + friendID);
+  chatarea.setAttribute('rows', '5');
+
+  var input = document.createElement('input');
+  input.setAttribute('type', 'text');
+  input.setAttribute('class', 'am-u-sm-10 am-margin-top-xs msgarea-' + friendID);
+  input.setAttribute('style', 'height:30px');
+
+  var sendBtn = document.createElement('button');
+  sendBtn.setAttribute('class', 'am-u-sm-2 am-btn am-btn-primary am-margin-top-xs');
+  sendBtn.setAttribute('style', 'height:30px');
+  sendBtn.setAttribute('onclick', 'send("' + friendID + '")');
+  sendBtn.innerHTML = 'Go';
+
+  div11.appendChild(small);
+  div11.appendChild(a);
+
+  div121.appendChild(chatarea);
+  div121.appendChild(input);
+  div121.appendChild(sendBtn);
+
+  div12.appendChild(div121);
+
+  div1.appendChild(div11);
+  div1.appendChild(div12);
+
+  div.appendChild(div1);
+  tm.appendChild(div);
+}
+
+
+function deleteChatWith (friendID) {
+  tm = document.getElementById('maindiv');
+  tm.removeChild(document.getElementById('doc-modal-chatwindow-' + friendID));
+}
+
+
+
+// $('#doc-modal-chatwindow-' + currentChatID).on('closed.modal.amui', function(){
+//   alert (currentChatID + ' chat modal');
+// });
+
 
 
 </script>
