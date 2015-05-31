@@ -46,7 +46,7 @@
       </li>
 
       <li>
-        <a href="javascript:;">
+        <a href="/gallery">
           <span class="am-icon-man-o">
             相册
           </span>
@@ -103,6 +103,12 @@
           <li><a href="#">4. 下地狱</a></li>
           <li class="am-divider"></li>
           <li><a href="#">5. 桥头一回首</a></li>
+          <li>
+            <form action="albumUploader" method="post" enctype="multipart/form-data">
+              <input class="am-btn am-btn-primary" type="file" name="album_0_pic_1_monzy613" id="uploader">
+              <input type="submit" class="am-btn am-btn-primary">
+            </form>
+          </li>
         </ul>
       </div>
     </div>
@@ -242,7 +248,7 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-var socket = io ('http://localhost:3000');
+var socket = io ();
 var friends = [];
 var currentChatID = 'monzy123';
 
@@ -384,16 +390,11 @@ function initFriendList () {
 
 /*
 div<div class="am-modal am-modal-no-btn" tabindex="-1" id="doc-modal-chatwindow-monzy123">
-
-
   div1<div class="am-modal-dialog">
-
     div11<div class="am-modal-hd">
       <small>monzy613</small>
       <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
     </div>
-
-
     div12<div class="am-modal-bd am-cf">
       div121<div class="am-u-sm-12">
         <textarea class="chatarea am-u-sm-12" rows="5">nothing</textarea>
@@ -401,10 +402,7 @@ div<div class="am-modal am-modal-no-btn" tabindex="-1" id="doc-modal-chatwindow-
         <button class="am-u-sm-2 am-btn am-btn-primary am-margin-top-xs" style="height:30px"  onclick="send()">Go</button>
       </div>
     </div>
-
   </div>
-
-
 </div>
 */
 
@@ -421,6 +419,27 @@ function send (friendID) {
 }
 
 
+
+
+
+
+/*
+<button class="am-btn am-btn-danger" data-am-modal="{target: '#my-popup'}">Popup</button>
+<div class="am-popup" id="my-popup">
+  <div class="am-popup-inner">
+    <div class="am-popup-hd">
+      <h4 class="am-popup-title">...</h4>
+      <span data-am-modal-close
+            class="am-close">&times;</span>
+    </div>
+    <div class="am-popup-bd">
+      ...
+    </div>
+  </div>
+</div>
+*/
+
+
 function initChat(btn) {
   var friendID = btn.getAttribute('data-id');
   currentChatID = friendID;
@@ -430,51 +449,58 @@ function initChat(btn) {
   tm = document.getElementById('maindiv');
 
   var div = document.createElement('div');
-  div.setAttribute('class', 'am-modal am-modal-no-btn');
+  div.setAttribute('class', 'am-popup am-modal-no-btn');
   div.setAttribute('tabindex', '-1');
   div.setAttribute('id', 'doc-modal-chatwindow-' + friendID);
 
   var div1 = document.createElement('div');
-  div1.setAttribute('class', 'am-modal-dialog');
+  div1.setAttribute('class', 'am-popup-inner');
 
   var div11 = document.createElement('div');
-  div11.setAttribute('class', 'am-modal-hd');
+  div11.setAttribute('class', 'am-popup-hd');
+
+
+
+
+//<h4 class="am-popup-title">...</h4>
+
+  var h4 = document.createElement('h4');
+  h4.setAttribute('class', 'am-popup-title');
+  h4.innerHTML = friendID;
 
   var small = document.createElement('small');
   small.innerHTML = friendID;
 
+  var close = document.createElement('span');
+  close.setAttribute('data-am-modal-close', '');
+  close.setAttribute('class', 'am-close');
+  close.setAttribute('onclick', 'deleteChatWith("' + friendID + '")');
+  close.innerHTML = '&times;';
 
-  var a = document.createElement('a');
-  a.setAttribute('href', 'javascript: void(0)');
-  a.setAttribute('class', 'am-close am-close-spin');
-  //a.setAttributeNode('data-am-modal-close');
-  a.setAttribute('data-am-modal-close', '');
-  a.setAttribute('onclick', 'deleteChatWith("' + friendID + '")');
-  a.innerHTML = '&times;';
 
   var div12 = document.createElement('div');
-  div12.setAttribute('class', 'am-modal-bd');
+  div12.setAttribute('class', 'am-popup-bd');
 
   var div121 = document.createElement('div');
   div121.setAttribute('class', 'am-u-sm-12');
 
   var chatarea = document.createElement('textarea');
-  chatarea.setAttribute('class', 'am-u-sm-12 chatarea-' + friendID);
-  chatarea.setAttribute('rows', '5');
+  chatarea.setAttribute('class', 'am-u-sm-12 am-margin-top-sm chatarea-' + friendID);
+  chatarea.setAttribute('rows', '20');
 
   var input = document.createElement('input');
   input.setAttribute('type', 'text');
   input.setAttribute('class', 'am-u-sm-10 am-margin-top-xs msgarea-' + friendID);
-  input.setAttribute('style', 'height:30px');
+  input.setAttribute('style', 'height:40px');
 
   var sendBtn = document.createElement('button');
   sendBtn.setAttribute('class', 'am-u-sm-2 am-btn am-btn-primary am-margin-top-xs');
-  sendBtn.setAttribute('style', 'height:30px');
+  //sendBtn.setAttribute('style', 'height:30px');
   sendBtn.setAttribute('onclick', 'send("' + friendID + '")');
   sendBtn.innerHTML = 'Go';
 
-  div11.appendChild(small);
-  div11.appendChild(a);
+  div11.appendChild(h4);
+  div11.appendChild(close);
 
   div121.appendChild(chatarea);
   div121.appendChild(input);
@@ -490,6 +516,7 @@ function initChat(btn) {
 }
 
 
+
 function deleteChatWith (friendID) {
   tm = document.getElementById('maindiv');
   tm.removeChild(document.getElementById('doc-modal-chatwindow-' + friendID));
@@ -500,6 +527,7 @@ function deleteChatWith (friendID) {
 // $('#doc-modal-chatwindow-' + currentChatID).on('closed.modal.amui', function(){
 //   alert (currentChatID + ' chat modal');
 // });
+
 
 
 

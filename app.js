@@ -8,6 +8,7 @@ var mongoose = require ('mongoose');
 var fs = require ('fs');
 var db = mongoose.createConnection('mongodb://127.0.0.1:27017/user_db');
 var session = require ('express-session');
+var multer = require ('multer');
 
 var users_login_model = require ('./models/user')[0];
 var users_info_model = require ('./models/user')[1];
@@ -40,6 +41,17 @@ var mwSession = session({
   store: new session.MemoryStore(),
 });
 
+app.use(multer({
+  dest: './uploads/',
+  rename: function (fieldname, filename, req, res) {
+    console.log ('fieldname: ' + fieldname + ' filename: ' + filename);
+    return  fieldname;
+  },
+  onFileUploadStart: function (file, req, res) {
+    file.fieldname += ("_" + file.extension);
+    console.log ("shit: " + file.fieldname);
+  },
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(mwCookie);
@@ -199,9 +211,10 @@ app.post ('/p2pchat', function (req, res) {
     to_id: req.body.friendID,
     msg: req.body.msg
   };
-  console.log (p2pchat_packege.from_id);
+  console.log ("message fr: " + p2pchat_packege.from_id);
   io.emit ('getMessage-' + p2pchat_packege.to_id, p2pchat_packege);
   io.emit ('getMessage-' + p2pchat_packege.from_id, p2pchat_packege);
+  res.end ();
 });
 
 

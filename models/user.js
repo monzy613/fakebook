@@ -32,10 +32,17 @@ var users_friend = new mongoose.Schema ({
     applied_by: {type: Array},
     appling: {type: Array}
 });
+
+
+var users_gallery = new mongoose.Schema ({
+    _id: {type: String},
+    filenames: {type: Array}
+});
 //schemas end
 
 module.exports = [
 mongoose.model ('users_login', users_login),
 mongoose.model ('users_info', users_info),
 mongoose.model ('users_state', users_state),
-mongoose.model ('users_friend', users_friend)];
+mongoose.model ('users_friend', users_friend),
+mongoose.model ('users_gallery', users_gallery)];

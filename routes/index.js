@@ -38,6 +38,16 @@ router.get ('/test1', function (req, res, next) {
 	//res.render ('userPage', {head_img_name: 'head_test.png'});
 });
 
+router.post ('/galleryUploader', function (req, res) {
+	console.log ("gallery: " + req.files);
+	res.end ();
+});
+
+router.get ('/gallery', function (req, res) {
+	//res.render ('album', {username: req.session.user.username, nickname: req.session.user.nickname});
+	res.render ('gallery');
+});
+
 router.route ('/state').get (function (req, res) {
 	res.render ('state');
 }).post (function (req, res) {

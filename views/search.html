@@ -111,7 +111,7 @@
 
 
 <script>
-var socket = io ("http://localhost:3000");
+var socket = io ();
 var search_result = [];
 socket.on ('connect', function () {
   socket.emit ('getSearchRequest', {some: "search"});

@@ -24,7 +24,7 @@
       </li>
 
       <li>
-        <a href="javascript:;">
+        <a href="/gallery">
           <span class="am-icon-man-o">
             相册
           </span>
@@ -111,14 +111,15 @@
 <![endif]-->
 
 <!--[if (gte IE 9)|!(IE)]><!-->
-<script src="assets/js/jquery.min.js"></script>
+<script src = "//libs.cdnjs.net/jquery/2.1.1/jquery.min.js"></script>
+<!-- <script src="assets/js/jquery.min.js"></script> -->
 <script src="assets/js/amazeui.min.js"></script>
 <!--<![endif]-->
 <script src="assets/js/app.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-  var socket = io ("http://localhost:3000");
+  var socket = io ();
   var statesArray = [];
   socket.on ('connect', function () {
     socket.emit ('gethistorystates', {some: 'data'});

@@ -5,6 +5,7 @@ var users_login_model = require ('./models/user')[0];
 var users_info_model = require ('./models/user')[1];
 var users_state_model = require ('./models/user')[2];
 var users_friend_model = require ('./models/user')[3];
+var users_gallery_model = require ('./models/user')[4];
 
 var users_ids = [];
 mongoose.connect ('mongodb://localhost:27017/user_db');
@@ -14,7 +15,14 @@ var doc_friend = {
 	applied_by: new Array (),
 	appling: new Array ()
 };
-users_friend_model.create (doc_friend, function (error_in_create) {
+
+var doc_gallery = {
+	_id: process.argv[2],
+	filenames: new Array ()
+}
+
+
+users_gallery_model.create (doc_gallery, function (error_in_create) {
 	if (error_in_create) {
 		console.log (error_in_create);
 	} else {
