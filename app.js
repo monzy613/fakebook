@@ -14,10 +14,15 @@ var users_login_model = require ('./models/user')[0];
 var users_info_model = require ('./models/user')[1];
 var users_state_model = require ('./models/user')[2];
 var users_friend_model = require ('./models/user')[3];
+var users_gallery_model = require ('./models/user')[4];
 
 
 var routes = require ('./routes/index');
 var users = require('./routes/users');
+
+
+
+
 
 
 var app = express();
@@ -33,6 +38,7 @@ var io = require ('socket.io')(chattingServer);
 
 
 
+
 var mwCookie = cookieParser('my secret');
 var mwSession = session({
   secret: 'my secret',
@@ -41,21 +47,66 @@ var mwSession = session({
   store: new session.MemoryStore(),
 });
 
-app.use(multer({
-  dest: './uploads/',
-  rename: function (fieldname, filename, req, res) {
-    console.log ('fieldname: ' + fieldname + ' filename: ' + filename);
-    return  fieldname;
-  },
-  onFileUploadStart: function (file, req, res) {
-    file.fieldname += ("_" + file.extension);
-    console.log ("shit: " + file.fieldname);
-  },
-}));
+
+
+// app.post ('/galleryUploader', function (req, res) {
+//   fileMulter.dest = './';
+//   console.log ('path changed ' + fileMulter.dest);
+//   res.end ();
+// });
+
+
+
+//file
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(mwCookie);
 app.use(mwSession);
+
+
+
+var fileMulter = multer({
+  rename: function (fieldname, filename, req, res) {
+    console.log ('fieldname: ' + fieldname + ' filename: ' + filename);
+    return  fieldname;
+  },
+  changeDest: function (dest, req) {
+    console.log ('changedest: ' + req.session.user.username);
+    dest = 'public/images/uploads/galleries/' + req.session.user.username + '/';
+    try {
+      fs.mkdirSync (dest);
+    } catch (ex) {
+      console.log (dest + '[already exists]');
+    }
+    return dest;
+  },
+  onFileUploadComplete: function (file, req, res) {
+    console.log ('extension: ' + file.path);
+    var username = req.session.user.username;
+    users_gallery_model.find ({ _id: username}, function (err, docs) {
+      if (!err) {
+        if (docs.length === 0) {
+          console.log ('user not found');
+        } else {
+          var filenames = docs[0].filenames;
+          var filename = path.join ('images', 'uploads', 'galleries', username, file.name);
+          filenames.push (filename);
+          users_gallery_model.update ({_id: username}, {$set: {filenames: filenames}}, function (err2, docs2) {});
+        }
+      } else {
+        console.log ('ERR: ' + err);
+      }
+    });
+  }
+});
+
+
+
+
+app.use(fileMulter);
+
 
 
 // socket.io
@@ -147,6 +198,22 @@ function getAllFriendsOf (username, socket) {
   });
 }
 
+function getGalleryOf (username, socket) {
+  users_gallery_model.find ({_id: username}, function (err, docs) {
+    if (!err) {
+      if (docs.length !== 0) {
+        var filenames = docs[0].filenames;
+        console.log ("Gallery: " + filenames);
+        socket.emit ('getGalleryFromServer', filenames);
+      } else {
+        console.log (username + ' not found in users_gallery_model');
+      }
+    } else {
+      console.log ('ERROR_FROM_[getGalleryOf] ' + err);
+    }
+  });
+}
+
 
 
 function onListChanged () {
@@ -192,6 +259,10 @@ io.on ('connection', function (socket) {
 
   socket.on ('getFriendList', function (data) {
     getAllFriendsOf (socket.handshake.session.user.username, socket);
+  });
+
+  socket.on ('getGallery', function (data) {
+    getGalleryOf (socket.handshake.session.user.username, socket);
   });
 });
 

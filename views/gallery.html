@@ -70,9 +70,9 @@
           <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
         </div>
         <div class="am-modal-bd">
-          <form action="/galleryUploader" method="post">
+          <form action="/galleryUploader" method="post" enctype="multipart/form-data">
             <input class="am-btn am-btn-primary" type="file" name="" id="uploader">
-            <input type="submit" class="am-btn am-btn-primary">
+            <input type="submit" class="am-btn am-btn-primary upload-comfirm-button">
           </form>
         </div>
       </div>
@@ -132,8 +132,20 @@ var socket = io ();
 socket.on ('connect', function () {
   socket.emit ('getGallery', {some: 'gallery'});
 });
+var gallery = [];
 
-//socket.on ('getGalleryFrom');
+
+
+
+socket.on ('getGalleryFromServer', function (data) {
+  console.log (data);
+  gallery = data;
+  var newFileName = gallery.length + '_<%=username%>';
+  uploader = document.getElementById('uploader');
+  uploader.setAttribute('name', newFileName);
+  initGallery ();
+});
+
 
 /*
       <li>
@@ -168,8 +180,13 @@ function extension (filename) {
   alert (tmpArr[tmpArr.length - 1]);
 }
 
+function initGallery () {
+  for (var i in gallery) {
+    addPicture ({imgPath: gallery[i], imgName: ('img' + i)});
+  }
+}
 
-addPicture ({imgPath: 'head_imgs/head_test.png', imgName: 'nico'});
+
 
 </script>
 </body>

@@ -8,6 +8,7 @@ var db = mongoose.createConnection('mongodb://127.0.0.1:27017/user_db');
 var requestIDs = [];//[{reqId: xxx, _id: xxx}, {reqId: xxx, _id: xxx}];
 var fs = require ('fs');
 var session = require ('express-session');
+var multer = require ('multer');
 
 
 
@@ -38,14 +39,17 @@ router.get ('/test1', function (req, res, next) {
 	//res.render ('userPage', {head_img_name: 'head_test.png'});
 });
 
+
+
+
+
 router.post ('/galleryUploader', function (req, res) {
-	console.log ("gallery: " + req.files);
-	res.end ();
+	console.log ('FILENAME: ' + req.files);
+	res.redirect ('/gallery');
 });
 
 router.get ('/gallery', function (req, res) {
-	//res.render ('album', {username: req.session.user.username, nickname: req.session.user.nickname});
-	res.render ('gallery');
+	res.render ('gallery', {username: req.session.user.username, nickname: req.session.user.nickname});
 });
 
 router.route ('/state').get (function (req, res) {

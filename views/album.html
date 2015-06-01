@@ -1,0 +1,161 @@
+<% include header.html %>
+
+<header class="am-topbar admin-header">
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only am-fl" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+
+  <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+
+    <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-middle admin-header-list">
+
+      <li>
+        <a href="/userPage">
+          <span class="am-icon-man-o">
+            主页
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a>
+          <span class="am-icon-man-o">
+            状态
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:;">
+          <span class="am-icon-man-o">
+            相册
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="/chat">
+          <span class="am-icon-man-o">
+            多人聊天室
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:;">
+          <span class="am-icon-man-o">
+            附近的人
+          </span>
+        </a>
+      </li>
+
+
+    </ul>
+  </div>
+</header>
+
+<!--TEST start-->
+
+<!--TEST end-->
+
+
+<div class="am-cf admin-main">
+
+  <!-- content start -->
+  <div class="admin-content">
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">相册</strong> / <small>Album</small></div>
+      <div class="am-fr am-cf">
+        <input type="button" class="statebutton modify-button am-btn am-btn-primary am-fr am-show-sm-only" value="State"
+        data-am-collapse="{target: '#statefield-collapse'}"></div>
+
+<!--button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button-->
+
+
+    </div>
+    <hr/>
+    <div class="am-u-centered">
+      <input type="button" class="picture-upload-button am-btn am-btn-primary am-u-sm-12" value="Send" data-am-modal="{target: '#upload-madal', closeViaDimmer: 0, width: 400, height: 225}">
+    </div>
+
+
+
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="upload-madal">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">上传照片
+      <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+    </div>
+    <div class="am-modal-bd">
+      <form action="/albumUploader" method="post">
+        <input type=file name="file">
+      </form>
+    </div>
+  </div>
+</div>
+
+
+      <div class="am-u-md-12">
+        <ul class="am-comments-list" id="statelist">
+        </ul>
+      </div>
+
+
+
+    <hr/>
+  </div>
+  <!-- content end -->
+</div>
+
+
+<a class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+
+<footer>
+  <br/>
+  <hr>
+  <p class="am-padding-left" align=center>fakebook Tongji</p>
+</footer>
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="assets/js/polyfill/rem.min.js"></script>
+<script src="assets/js/polyfill/respond.min.js"></script>
+<script src="assets/js/amazeui.legacy.js"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/amazeui.min.js"></script>
+<!--<![endif]-->
+<script src="assets/js/app.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+  var socket = io ("http://localhost:3000");
+  socket.on ('connect', function () {
+  });
+
+
+
+  /*
+
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="upload-madal">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">上传照片
+      <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+    </div>
+    <div class="am-modal-bd">
+      <form action="/albumUploader" method="post">
+        <input type=file name="file">
+      </form>
+    </div>
+  </div>
+</div>
+
+  */
+
+  function initUploader () {
+    td = document.getElementById('admin-content');
+
+  }
+</script>
+</body>
+</html>
