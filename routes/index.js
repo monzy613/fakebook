@@ -40,6 +40,11 @@ router.get ('/test1', function (req, res, next) {
 });
 
 
+router.get ('/peopleAround', function (req, res) {
+	res.render ('peopleAround');
+});
+
+
 
 
 
@@ -310,6 +315,10 @@ router.route ('/personalPage').post (function (req, res) {
 	var isInDB = false;
 	var username = req.body.username;
 	var password = req.body.password;
+	var nickname = ""
+	var email = ""
+	var qq = ""
+	console.log ("user-agent: " + req.headers["user-agent"]);
 	users_login_model.find ({_id: username, password: password}, function (err, docs) {
 		if (!err) {
 			if (docs != '') {
@@ -324,7 +333,11 @@ router.route ('/personalPage').post (function (req, res) {
 				};
 				//req.session.username = "MONZY666";
 				//res.setHeader ("Set-Cookie", ["username=" + docs[0]._id, "nickname=" + docs[0].nickname, "email=" + docs[0].email, "qq=" + docs[0].qq]);
+				nickname = docs[0].nickname
+				email = docs[0].email
+				qq = docs[0].qq
 				console.log ('account validation success');
+				res.cookie("username", username)
 
 				currentId = username;
 				isLogin = true;
@@ -340,9 +353,23 @@ router.route ('/personalPage').post (function (req, res) {
 		}
 
 		if (isInDB) {
-			//res.render ('personalHomePage', {title: 'Login Success', username: username});
-			res.redirect ('/userPage');
-			//res.render ('chat', { username: currentId });
+			if (req.headers["user-agent"].match ('com.Monzy.se1353003') !== null) {
+				users_friend_model.find ({_id: username}, function(err, docs) {
+					if (!err) {
+						if (docs.length !== 0) {
+							var friends = docs[0].friends_ids
+							res.send ({username: username, nickname: nickname, email: email, qq: qq, headImageURL: "http://www.feizl.com/upload2007/2012_07/1207010046433315.jpg", friends: friends});
+							res.end ();
+						} else {
+						}
+					} else {
+
+					}
+
+				});
+			} else {
+				res.redirect ('/userPage');
+			}
 		} else {
 			//alert ("Wrong username or password!");
 			res.render ('errorPage', {title: 'ACCOUNT_PASSWORD_PROBLEM'});

@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
   <meta charset="UTF-8">
-  <title>Fakebook</title>
+  <title>Landing Page | Amaze UI Example</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -119,20 +119,51 @@
   </div>
 </header>
 
-<div class="get">
-  <div class="am-g">
-    <div class="am-u-lg-12">
-      <h1 class="get-title">
-        <img src="logo/fakebook_logo.png">
-      </h1>
 
-      <p>
-        一个普通的社交软件！
-      </p>
 
-    </div>
-  </div>
-</div>
+
+
+
+
+<style type="text/css">
+body, html,#allmap {width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
+</style>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=D665ac6ae68f83f16fac0c2e10f09de5"></script>
+<title>可视区域内的搜素</title>
+</head>
+<body>
+<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+
+// 百度地图API功能
+var map = new BMap.Map("allmap");
+var latitude;
+var longitude;
+window.navigator.geolocation.getCurrentPosition (function (pos) {
+    latitude = pos.coords.latitude;
+    longitude = pos.coords.longitude;
+    map.centerAndZoom(new BMap.Point(longitude, latitude), 16);
+});
+
+
+
+
+//map.centerAndZoom(new BMap.Point(longitude, latitude), 14);
+
+var local = new BMap.LocalSearch(map, {
+  renderOptions:{map: map}
+});
+//local.searchInBounds("银行", map.getBounds());
+
+map.addEventListener("dragend",function(){
+    map.clearOverlays();
+    local.searchInBounds("同济大学", map.getBounds());
+});
+</script>
+
+
 
 
 
@@ -152,6 +183,10 @@
 <!--[if (gte IE 9)|!(IE)]><!-->
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/amazeui.min.js"></script>
+<script>
+
+
+</script>
 <!--<![endif]-->
 </body>
 </html>
