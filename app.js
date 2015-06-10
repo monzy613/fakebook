@@ -264,6 +264,20 @@ io.on ('connection', function (socket) {
   socket.on ('getGallery', function (data) {
     getGalleryOf (socket.handshake.session.user.username, socket);
   });
+
+
+
+  //ios use
+  socket.on ('comment', function (data) {
+    console.log(data);
+    io.emit ('comment', data);
+  })
+
+  //ios use
+  socket.on ('p2pchat', function (data) {
+    console.log("ios_p2pchat: " + data.from_id + ", " + data.to_id + ", " + data.msg);
+    p2pSender(data.from_id, data.to_id, data.msg);
+  });
 });
 
 
@@ -277,17 +291,39 @@ app.get ('/comment', function (req, res) {
 /////////
 
 app.post ('/p2pchat', function (req, res) {
+  // var p2pchat_packege = {
+  //   from_id: req.session.user.username,
+  //   to_id: req.body.friendID,
+  //   msg: req.body.msg
+  // };
+  // console.log ("message fr: " + p2pchat_packege.from_id);
+  // io.emit ('getMessage-' + p2pchat_packege.to_id, p2pchat_packege);
+  // io.emit ('getMessage-' + p2pchat_packege.from_id, p2pchat_packege);
+  p2pSender(req.session.user.username, req.body.friendID, req.body.msg);
+  res.end ();
+});
+
+
+function p2pSender(_from_id, _to_id, _msg) {
   var p2pchat_packege = {
-    from_id: req.session.user.username,
-    to_id: req.body.friendID,
-    msg: req.body.msg
+    from_id: _from_id,
+    to_id: _to_id,
+    msg: _msg
   };
   console.log ("message fr: " + p2pchat_packege.from_id);
   io.emit ('getMessage-' + p2pchat_packege.to_id, p2pchat_packege);
   io.emit ('getMessage-' + p2pchat_packege.from_id, p2pchat_packege);
-  res.end ();
-});
+}
 
+
+
+/*
+  var send_package = {
+    friendID: friendID,
+    msg: msg
+  };
+  $.post ('/p2pchat', send_package);
+*/
 
 ///////////
 

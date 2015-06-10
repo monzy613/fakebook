@@ -32,7 +32,35 @@ var users_login_model = require ('../models/user')[0];
 var users_info_model = require ('../models/user')[1];
 var users_state_model = require ('../models/user')[2];
 var users_friend_model = require ('../models/user')[3];
+var users_gallery_model = require('../models/user')[4];
 //models end
+
+
+
+
+//ios
+
+router.post('/getGalleryFromIos', function(req, res) {
+	var username = req.body.username;
+	users_gallery_model.find ({_id: username}, function (err, docs) {
+		if (!err) {
+			if (docs.length !== 0) {
+		        var filenames = docs[0].filenames;
+		        console.log ("Gallery: " + filenames);
+		        res.send ({filenames: filenames, count: filenames.length});
+		        res.end ();
+			} else {
+				console.log ('[ERR FROM] getGalleryFromIos: no such user');
+			}
+		} else {
+			console.log ('[ERR FROM] getGalleryFromIos: ' + err);
+		}
+	});
+});
+
+//ios
+
+
 
 //test1
 router.get ('/test1', function (req, res, next) {
@@ -354,12 +382,40 @@ router.route ('/personalPage').post (function (req, res) {
 
 		if (isInDB) {
 			if (req.headers["user-agent"].match ('com.Monzy.se1353003') !== null) {
-				users_friend_model.find ({_id: username}, function(err, docs) {
+				users_friend_model.find ({_id: username}, function(err, docs_friends) {
 					if (!err) {
-						if (docs.length !== 0) {
-							var friends = docs[0].friends_ids
-							res.send ({username: username, nickname: nickname, email: email, qq: qq, headImageURL: "http://www.feizl.com/upload2007/2012_07/1207010046433315.jpg", friends: friends});
-							res.end ();
+						if (docs_friends.length !== 0) {
+							var friends = docs_friends[0].friends_ids
+							var headImageURLS = []
+							for (var tmpI = 0; tmpI < friends.length; ++tmpI) {
+								headImageURLS.push ("http://localhost:3000/head_imgs/head_test.png");
+								// headImageURLS.push ("http://www.feizl.com/upload2007/2012_07/1207010046433315.jpg");
+							}
+
+							users_gallery_model.find ({_id: username}, function (err, docs_gallery) {
+								if (!err) {
+									if (docs_gallery.length !== 0) {
+										var gallery = docs_gallery[0].filenames
+										res.send ({
+											username: username,
+											nickname: nickname,
+											email: email,
+											qq: qq,
+											headImageURL: "http://localhost:3000/head_imgs/head_test.png",
+											gallery: gallery,
+											friends: friends,
+											headImageURLS: headImageURLS,
+											friend_amount: friends.length});
+										console.log ("friendLength: " + friends.length);
+										res.end ();
+									}
+								} else {
+
+								}
+							});
+
+/*last res end*/
+
 						} else {
 						}
 					} else {
