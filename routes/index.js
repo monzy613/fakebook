@@ -24,10 +24,6 @@ var currentEmail = 'dafaultEmail';
 //schemas start
 
 // models start
-//var users_login_model = db.model ('users_login', users_login);
-// var users_login_model = require ('../models/user')[0];
-// var users_info_model = db.model ('users_info', users_info);
-// var users_state_model = db.model ('users_state', users_state);
 var users_login_model = require ('../models/user')[0];
 var users_info_model = require ('../models/user')[1];
 var users_state_model = require ('../models/user')[2];
@@ -58,6 +54,24 @@ router.post('/getGalleryFromIos', function(req, res) {
 	});
 });
 
+router.post('/searchByNicknameFromIOS', function(req, res) {
+	var username = req.body.username;
+	var searchNickname = req.body.searchNickname;
+
+	users_info_model.find ({nickname: searchNickname}, function(err, docs) {
+		if (!err) {
+			if (docs.length !== 0) {
+				res.send (docs);
+				res.end();
+			} else {
+
+			}
+		} else {
+
+		}
+	});
+});
+
 //ios
 
 
@@ -81,8 +95,60 @@ router.post ('/galleryUploader', function (req, res) {
 	res.redirect ('/gallery');
 });
 
+
+router.post ('/galleryUploaderIOS', function (req, res) {
+	console.log ("gallery uploader ios");
+	res.end();
+});
+
+router.post('/renewGalleryFromIOS', function (req, res) {
+	console.log ("renew gallery from ios");
+	users_gallery_model.find ({_id: req.session.user.username}, function (err, docs) {
+		if (!err) {
+			if (docs.length !== 0) {
+				var filenames = docs[0].filenames
+				res.send({gallery: filenames});
+				res.end();
+			} else {
+
+			}
+		} else {
+
+		}
+	});
+});
+
 router.get ('/gallery', function (req, res) {
 	res.render ('gallery', {username: req.session.user.username, nickname: req.session.user.nickname});
+});
+
+router.post ('/deletePhoto', function (req, res) {
+	var username = req.session.user.username;
+	var photoToDelete = req.body.photoToDelete;
+	console.log ("/deletePhoto " + username);
+	console.log ("Photo Name To Delete: " + photoToDelete);
+	users_gallery_model.find ({_id: username}, function (err, docs) {
+		if (!err) {
+			if (docs.length !== 0) {
+				var filenames = docs[0].filenames;
+				console.log ("before: " + filenames);
+				var filenames = removeFrom(filenames, photoToDelete);
+				console.log ("after: " + filenames);
+				if (filenames.length !== 0) {
+					users_gallery_model.update ({_id: username}, {$set: {filenames: filenames}}, function (err){
+						fs.unlinkSync("public/" + photoToDelete);
+						res.redirect("/gallery");
+					});
+				} else {
+					console.log ("photo to delete not found");
+				}
+			} else {
+
+			}
+		} else {
+
+		}
+	});
 });
 
 router.route ('/state').get (function (req, res) {
@@ -93,6 +159,7 @@ router.route ('/state').get (function (req, res) {
 
 router.route ('/sendState').post (function (req, res) {
 	var filenames;
+	console.log ("session: " + req.session.user);
 	users_state_model.find ({_id: req.session.user.username}, function (err, docs) {
 		//console.log ("FOUND: " + req.session.user.username);
 		filenames = docs[0].filenames;
@@ -105,7 +172,6 @@ router.route ('/sendState').post (function (req, res) {
 				if (!err) {
 					console.log ('WRITE SUCCESS!!!!');
 					users_state_model.update ({_id: req.session.user.username}, {$set: {filenames: filenames}}, function (err, docs) {
-
 					});
 				}
 			});
@@ -131,6 +197,8 @@ router.route ('/sendState').post (function (req, res) {
 
 			});
 		}
+		res.send({state: "done success"});
+		res.end();
 
 	});
 	console.log (req.body);
@@ -269,7 +337,7 @@ function friendApplitor (from_whom, to_whom) {
 
 
 router.get ('/userPage', function (req, res, next) {
-	res.render ('userPage', {head_img_name: 'head_test.png', username: req.session.user.nickname, qq: req.session.user.qq, email: req.session.user.email});
+	res.render ('userPage', {head_img_name: 'head_test.png', username: req.session.user.username, qq: req.session.user.qq, email: req.session.user.email, nickname: req.session.user.nickname});
 });
 
 //test1
@@ -381,6 +449,8 @@ router.route ('/personalPage').post (function (req, res) {
 		}
 
 		if (isInDB) {
+
+
 			if (req.headers["user-agent"].match ('com.Monzy.se1353003') !== null) {
 				users_friend_model.find ({_id: username}, function(err, docs_friends) {
 					if (!err) {
@@ -396,18 +466,38 @@ router.route ('/personalPage').post (function (req, res) {
 								if (!err) {
 									if (docs_gallery.length !== 0) {
 										var gallery = docs_gallery[0].filenames
-										res.send ({
-											username: username,
-											nickname: nickname,
-											email: email,
-											qq: qq,
-											headImageURL: "http://localhost:3000/head_imgs/head_test.png",
-											gallery: gallery,
-											friends: friends,
-											headImageURLS: headImageURLS,
-											friend_amount: friends.length});
-										console.log ("friendLength: " + friends.length);
-										res.end ();
+										users_state_model.find ({_id: username}, function(err, docs_state) {
+											if (!err) {
+												if (docs_state.length !== 0) {
+													var filenames = docs_state[0].filenames;
+										          if (filenames.length === 0) {
+										          } else {
+										            var fileContents = [];
+										            console.log ("FILEs: " + filenames);
+										            for (var i = 0; i < filenames.length; ++i) {
+										              fileContents.push (fs.readFileSync (filenames[i]).toString ());
+										            }
+													res.send ({
+														username: username,
+														nickname: nickname,
+														email: email,
+														qq: qq,
+														headImageURL: "http://localhost:3000/head_imgs/head_test.png",
+														states: fileContents,
+														gallery: gallery,
+														friends: friends,
+														headImageURLS: headImageURLS,
+														friend_amount: friends.length});
+													console.log ("friendLength: " + friends.length);
+													res.end ();
+										          }
+												} else {
+
+												}
+											} else {
+
+											}
+										});
 									}
 								} else {
 
@@ -423,6 +513,8 @@ router.route ('/personalPage').post (function (req, res) {
 					}
 
 				});
+
+
 			} else {
 				res.redirect ('/userPage');
 			}
@@ -602,6 +694,18 @@ function noRecurPushObj (arr, obj) {
 	}
 	arr.push (obj);
 	return true;
+}
+
+function removeFrom(arr, obj) {
+	for (var i = 0; i < arr.length; ++i) {
+		if (arr[i] === obj) {
+			var arr1 = arr.slice(0, i);
+			var arr2 = arr.slice(i + 1, arr.length);
+			arr = arr1.concat(arr2);
+			return arr;
+		}
+	}
+	return [];
 }
 
 

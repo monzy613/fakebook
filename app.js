@@ -269,8 +269,8 @@ io.on ('connection', function (socket) {
 
   //ios use
   socket.on ('comment', function (data) {
-    console.log(data);
-    io.emit ('comment', data);
+    console.log(data.username + "+" + data.content);
+    io.emit ('comment', {username: data.username, content: data.content});
   })
 
   //ios use
@@ -278,13 +278,16 @@ io.on ('connection', function (socket) {
     console.log("ios_p2pchat: " + data.from_id + ", " + data.to_id + ", " + data.msg);
     p2pSender(data.from_id, data.to_id, data.msg);
   });
+
 });
 
 
 /// /comment ->> see index.html
 app.get ('/comment', function (req, res) {
-	io.emit ('comment', req.query.text);
-	console.log (req.query.text);
+  var username = req.query.username;
+  var content = req.query.text;
+	io.emit ('comment', {username: username, content: content});
+	console.log (req.query.text + ", " + req.query.username);
 	res.end ();
 });
 

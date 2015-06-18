@@ -139,7 +139,9 @@ var gallery = [];
 socket.on ('getGalleryFromServer', function (data) {
   console.log (data);
   gallery = data;
-  var newFileName = gallery.length + '_<%=username%>';
+  var tmpArr = gallery[gallery.length - 1].split('/');
+  var prefix = parseInt(tmpArr[tmpArr.length - 1].split('_')[0]) + 1;
+  var newFileName = prefix + '_<%=username%>';
   uploader = document.getElementById('uploader');
   uploader.setAttribute('name', newFileName);
   initGallery ();
@@ -150,25 +152,38 @@ socket.on ('getGalleryFromServer', function (data) {
       <li>
         <a href="#">
           <img class="am-img-thumbnail am-img-bdrs" src="http://cn.bing.com/az/hprichv/LondonTrainStation_GettyRR_139321755_ZH-CN742316019.jpg" alt=""/>
-          <div class="gallery-title">远方 有一个地方 那里种有我们的梦想</div>
-          <div class="gallery-desc">2375-09-26</div>
+          <button class="am-btn am-btn-success am-u-sm-6">imgx</button>
+          <button class="am-btn am-btn-danger am-u-sm-6">删除/del</button>
         </a>
       </li>
 */
+
+
+function delPhoto(photoToDelete) {
+  $.post('/deletePhoto', {photoToDelete: photoToDelete});
+  location.reload(true);
+}
 
 function addPicture (image) {
   td = document.getElementById('gallery-list');
   var li = document.createElement('li');
   var a = document.createElement('a');
   var img = document.createElement('img');
-  img.setAttribute('class', 'am-img-thumbnail am-img-bdrs');
+  img.setAttribute('class', 'am-img-thumbnail am-img-bdrs am-u-sm-12');
   img.setAttribute('src', image.imgPath);
 
-  var titleDiv = document.createElement('div');
-  titleDiv.innerHTML = image.imgName;
+  var titleButton = document.createElement('button');
+  titleButton.innerHTML = image.imgName;
+  titleButton.setAttribute('class', 'am-btn am-btn-primary am-u-sm-6');
+
+  var delButton = document.createElement('button');
+  delButton.setAttribute('class', 'am-btn am-btn-danger am-u-sm-6');
+  delButton.setAttribute('onclick', 'delPhoto("' + image.imgPath + '")');
+  delButton.innerHTML = '删除/del';
 
   a.appendChild(img);
-  a.appendChild(titleDiv);
+  a.appendChild(titleButton);
+  a.appendChild(delButton);
   li.appendChild(a);
   td.appendChild(li);
 }

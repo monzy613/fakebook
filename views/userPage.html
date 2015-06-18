@@ -98,17 +98,6 @@
         <ul class="am-dropdown-content notificationList">
           <li class="am-dropdown-header">通知</li>
           <li><a href="/friendManagement">处理好友请求</a></li>
-          <li><a href="#">2. 去火星</a></li>
-          <li><a href="#">3. 还是回地球</a></li>
-          <li><a href="#">4. 下地狱</a></li>
-          <li class="am-divider"></li>
-          <li><a href="#">5. 桥头一回首</a></li>
-          <li>
-            <form action="albumUploader" method="post" enctype="multipart/form-data">
-              <input class="am-btn am-btn-primary" type="file" name="album_0_pic_1_monzy613" id="uploader">
-              <input type="submit" class="am-btn am-btn-primary">
-            </form>
-          </li>
         </ul>
       </div>
     </div>
@@ -150,13 +139,14 @@
                 <img class="am-img-circle am-img-thumbnail" src="head_imgs/<%=head_img_name%>" alt=""/>
               </div>
               <div align=center class="am-badge am-badge-secondary">
-                <%=username%>
+                <%=nickname%>
               </div>
             </div>
           </div>
         </div>
       </div>
       <!--head img end-->
+
 
 
 
@@ -169,7 +159,7 @@
           <div class="am-form-group">
             <label for="name" class="am-u-sm-3 am-form-label">姓名 / Name</label>
             <div class="am-u-sm-9">
-              <label class="am-form-label"><%=username%></label>
+              <label class="am-form-label"><%=nickname%></label>
             </div>
           </div>
 

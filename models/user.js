@@ -38,6 +38,11 @@ var users_gallery = new mongoose.Schema ({
     _id: {type: String},
     filenames: {type: Array}
 });
+
+
+var users_notification = new mongoose.Schema ({
+	_id: {type: String},
+});
 //schemas end
 
 module.exports = [

@@ -110,27 +110,28 @@
   });
 
 
-  socket.on ('comment', function (text) {
+  socket.on ('comment', function (package) {
     if ($('.textarea').val () !== '') {
-      $('.textarea').val ($('.textarea').val() + '\n' + text);
+      $('.textarea').val ($('.textarea').val() + '\n' + package.username + ": " + package.content);
     } else {
-      $('.textarea').val (text);
+      $('.textarea').val (package.username + ": " + package.content);
     }
   });
 
   function send (text) {/* */
-    $.get ('/comment?text=' + encodeURIComponent (text));
+    $.get ('/comment?text=' + encodeURIComponent (text) + '&username=<%= title%>');
   }
 
   $('.comment').keydown (function (event) {
     if (event.which === 13) { /*13--> '\n' */
-      send ("<%= title %>: " + this.value);
+      send (this.value);
       this.value = '';
     }
   });
 
   $('.sendbutton').click (function () {
-    send ("<%= title %>: " + $('.comment').val());
+    // send ("<%= title %>: " + $('.comment').val());
+    send($('.comment').val());
 	  $('.comment').val ('');
   });
 </script>
