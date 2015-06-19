@@ -139,11 +139,18 @@ var gallery = [];
 socket.on ('getGalleryFromServer', function (data) {
   console.log (data);
   gallery = data;
-  var tmpArr = gallery[gallery.length - 1].split('/');
-  var prefix = parseInt(tmpArr[tmpArr.length - 1].split('_')[0]) + 1;
+  var tmpArr = [];
+  var prefix = "";
+  if (gallery.length !== 0) {
+    tmpArr = gallery[gallery.length - 1].split('/');
+    prefix = "" + parseInt(tmpArr[tmpArr.length - 1].split('_')[0]) + 1;
+  } else {
+    prefix = "0";
+  }
   var newFileName = prefix + '_<%=username%>';
   uploader = document.getElementById('uploader');
   uploader.setAttribute('name', newFileName);
+  console.log ("newFileName: " + newFileName);
   initGallery ();
 });
 

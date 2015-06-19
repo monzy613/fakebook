@@ -6,6 +6,7 @@ var users_info_model = require ('./models/user')[1];
 var users_state_model = require ('./models/user')[2];
 var users_friend_model = require ('./models/user')[3];
 var users_gallery_model = require ('./models/user')[4];
+var users_position_model = require ('./models/user')[5];
 
 var users_ids = [];
 mongoose.connect ('mongodb://localhost:27017/user_db');

@@ -77,6 +77,7 @@ var fileMulter = multer({
     dest = 'public/images/uploads/galleries/' + req.session.user.username + '/';
     try {
       fs.mkdirSync (dest);
+      console.log ("mkdir success: " + req.session.user.username);
     } catch (ex) {
       console.log (dest + '[already exists]');
     }
@@ -207,6 +208,15 @@ function getGalleryOf (username, socket) {
         socket.emit ('getGalleryFromServer', filenames);
       } else {
         console.log (username + ' not found in users_gallery_model');
+      	var doc_gallery = {
+      		_id: username,
+      		filenames: new Array()
+      	};
+        users_gallery_model.create (doc_gallery, function (err_in_insert_gallery) {
+          if (!err_in_insert_gallery) {
+            console.log ('established');
+          }
+        });
       }
     } else {
       console.log ('ERROR_FROM_[getGalleryOf] ' + err);
@@ -263,6 +273,10 @@ io.on ('connection', function (socket) {
 
   socket.on ('getGallery', function (data) {
     getGalleryOf (socket.handshake.session.user.username, socket);
+  });
+
+  socket.on ("sendPositionToServer", function (data) {
+    console.log ("Position get from: " + data.username + ": (" + data.longitude + ", " + data.latitude + ").");
   });
 
 

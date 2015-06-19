@@ -340,13 +340,13 @@ function addFriendList (friend, headImg) {
   chatButton.setAttribute('data-nickname', friend.nickname);
   //chatButton.setAttribute('data-am-modal', '{target: "#doc-modal-chatwindow-' + friend.nickname +  '", closeViaDimmer: 0, width: 400, height: 225}');
   chatButton.setAttribute('onclick', 'initChat(this)');
-  chatButton.innerHTML = "唠嗑";
+  chatButton.innerHTML = "聊天";
 
   var deleteFriendButton = document.createElement('button');
   deleteFriendButton.setAttribute('class', 'am-u-sm-12 am-btn am-btn-danger');
   deleteFriendButton.setAttribute('data-id', friend._id);
   deleteFriendButton.setAttribute('data-nickname', friend.nickname);
-  deleteFriendButton.innerHTML = "友尽";
+  deleteFriendButton.innerHTML = "删除";
 
   div2.appendChild(chatButton);
   div2.appendChild(deleteFriendButton);

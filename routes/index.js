@@ -29,6 +29,7 @@ var users_info_model = require ('../models/user')[1];
 var users_state_model = require ('../models/user')[2];
 var users_friend_model = require ('../models/user')[3];
 var users_gallery_model = require('../models/user')[4];
+var users_position_model = require('../models/user')[5];
 //models end
 
 
@@ -83,7 +84,7 @@ router.get ('/test1', function (req, res, next) {
 
 
 router.get ('/peopleAround', function (req, res) {
-	res.render ('peopleAround');
+	res.render ('peopleAround', {username: req.session.user.username, nickname: req.session.user.nickname});
 });
 
 
@@ -623,6 +624,17 @@ router.route ('/register').get (function (req, res) {
 		appling: new Array ()
 	};
 
+	var doc_gallery = {
+		_id: username,
+		filenames: new Array()
+	};
+	
+	var doc_position = {
+		_id: username,
+		longitude: 0.0,
+		latitude: 0.0
+	};
+
 	users_login_model.create(doc_login, function(error_login_model){
 	    if(error_login_model) {
 	        console.log(error_login_model);
@@ -646,12 +658,26 @@ router.route ('/register').get (function (req, res) {
 	    				if (error_state_model) {
 	    					res.render ('errorPage', {title: 'REGISTER_FAILED'});
 	    				} else {
-	    					users_friend_model.create (doc_friend, function (error_friend_model) {
-	    						if (error_friend_model) {
-			    					res.render ('errorPage', {title: 'REGISTER_FAILED'});
+
+
+	    					users_gallery_model.create (doc_gallery, function (error_gallery_model) {
+	    						if (error_gallery_model) {
+
 	    						} else {
-					    			isLogin = true;
-					    			res.render ('index', {title: (username + ' Register successed')});
+			    					users_friend_model.create (doc_friend, function (error_friend_model) {
+			    						if (error_friend_model) {
+					    					res.render ('errorPage', {title: 'REGISTER_FAILED'});
+			    						} else {
+											users_position_model.create (doc_position, function(error_position_model) {
+												if (error_position_model) {
+													res.render('errorPage', {title: 'REGISTER_FAILED IN POSITION SECTION'});
+												} else {
+													isLogin = true;
+													res.render('index', {title: (username + 'Register succeed')});
+												}
+											});
+			    						}
+			    					});
 	    						}
 	    					});
 

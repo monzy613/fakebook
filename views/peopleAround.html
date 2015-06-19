@@ -135,9 +135,12 @@ body, html,#allmap {width: 100%;height: 100%;margin:0;font-family:"微软雅黑"
 <div id="allmap"></div>
 </body>
 </html>
+<script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
 
 // 百度地图API功能
+
+var socket = io();
 var map = new BMap.Map("allmap");
 var latitude;
 var longitude;
@@ -145,6 +148,8 @@ window.navigator.geolocation.getCurrentPosition (function (pos) {
     latitude = pos.coords.latitude;
     longitude = pos.coords.longitude;
     map.centerAndZoom(new BMap.Point(longitude, latitude), 16);
+    socket.emit("sendPositionToServer", {username: "<%=username%>", longitude: longitude, latitude: latitude});
+
 });
 
 
