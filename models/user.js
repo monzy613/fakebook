@@ -35,6 +35,7 @@ var users_friend = new mongoose.Schema ({
 
 var users_position = new mongoose.Schema ({
     _id: {type: String},
+    nickname: {type: String},
     longitude: 0.0,
     latitude:  0.0
 });

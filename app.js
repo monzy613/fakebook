@@ -15,6 +15,7 @@ var users_info_model = require ('./models/user')[1];
 var users_state_model = require ('./models/user')[2];
 var users_friend_model = require ('./models/user')[3];
 var users_gallery_model = require ('./models/user')[4];
+var users_position_model = require ('./models/user')[5];
 
 
 var routes = require ('./routes/index');
@@ -226,6 +227,38 @@ function getGalleryOf (username, socket) {
 
 
 
+
+//longitude, latitude0.02
+/*       {$and: [
+          {$and: [{longitude: {$lte: data.longitude + 0.02}}, {latitude: {$lte: data.latitude + 0.02}}]},
+          {$and: [{longitude: {$gte: data.longitude - 0.02}}, {latitude: {$gte: data.latitude - 0.02}}]}
+         ]}
+*/
+
+function getPeopleAround (username, nickname, data, socket) {
+  console.log ("getPeopleAround");
+  var options = {upsert: true};
+  users_position_model.update({_id: username}, {$set: {nickname: nickname, longitude: data.longitude, latitude: data.latitude}}, options, function(err) {
+    users_position_model.find (
+      {$and: [
+          {$and: [{longitude: {$lte: data.longitude + 0.02}}, {latitude: {$lte: data.latitude + 0.02}}]},
+          {$and: [{longitude: {$gte: data.longitude - 0.02}}, {latitude: {$gte: data.latitude - 0.02}}]}
+      ]}, function (err, docs) {
+      if (!err) {
+        if (docs.length !== 0) {
+          socket.emit('peopleAround', docs.filter(function(people) {return people._id !== username}));
+        } else {
+          console.log ("no people around");
+        }
+      } else {
+
+      }
+    }
+)  });
+}
+
+
+
 function onListChanged () {
 	io.emit ('list_changed', getAllNames ());
 }
@@ -277,6 +310,7 @@ io.on ('connection', function (socket) {
 
   socket.on ("sendPositionToServer", function (data) {
     console.log ("Position get from: " + data.username + ": (" + data.longitude + ", " + data.latitude + ").");
+    getPeopleAround(socket.handshake.session.user.username, socket.handshake.session.user.nickname, data, socket);
   });
 
 

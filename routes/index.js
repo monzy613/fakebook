@@ -628,9 +628,10 @@ router.route ('/register').get (function (req, res) {
 		_id: username,
 		filenames: new Array()
 	};
-	
+
 	var doc_position = {
 		_id: username,
+		nickname: nickname,
 		longitude: 0.0,
 		latitude: 0.0
 	};

@@ -1,122 +1,114 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-  <meta charset="UTF-8">
-  <title>Landing Page | Amaze UI Example</title>
+<!doctype html>
+<html class="no-js">
+<head>
+  <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="format-detection" content="telephone=no">
+  <title>Amaze UI Admin user Examples</title>
+  <meta name="description" content="这是一个 user 页面">
+  <meta name="keywords" content="user">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="renderer" content="webkit">
-  <meta http-equiv="Cache-Control" content="no-siteapp"/>
-  <!-- <link rel="alternate icon" type="image/png" href="assets/i/favicon.png"> -->
-  <link rel="alternate icon" type="image/png" href="logo/fakebook_logo.png">
-  <link rel="stylesheet" href="assets/css/amazeui.min.css"/>
-  <style>
-    .get {
-      background: #1E5B94;
-      color: #fff;
-      text-align: center;
-      padding: 100px 0;
-    }
-
-    .get-title {
-      font-size: 200%;
-      border: 2px solid #fff;
-      padding: 20px;
-      display: inline-block;
-    }
-
-    .get-btn {
-      background: #fff;
-    }
-
-    .detail {
-      background: #fff;
-    }
-
-    .detail-h2 {
-      text-align: center;
-      font-size: 150%;
-      margin: 40px 0;
-    }
-
-    .detail-h3 {
-      color: #1f8dd6;
-    }
-
-    .detail-p {
-      color: #7f8c8d;
-    }
-
-    .detail-mb {
-      margin-bottom: 30px;
-    }
-
-    .hope {
-      background: #0bb59b;
-      padding: 50px 0;
-    }
-
-    .hope-img {
-      text-align: center;
-    }
-
-    .hope-hr {
-      border-color: #149C88;
-    }
-
-    .hope-title {
-      font-size: 140%;
-    }
-
-    .about {
-      background: #fff;
-      padding: 40px 0;
-      color: #7f8c8d;
-    }
-
-    .about-color {
-      color: #34495e;
-    }
-
-    .about-title {
-      font-size: 180%;
-      padding: 30px 0 50px 0;
-      text-align: center;
-    }
-
-    .footer p {
-      color: #7f8c8d;
-      margin: 0;
-      padding: 15px 0;
-      text-align: center;
-      background: #2d3e50;
-    }
-  </style>
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--  <link rel="icon" type="image/png" href="assets/i/favicon.png">-->
+<!--  <link rel="apple-touch-icon-precomposed" href="assets/i/app-icon72x72@2x.png">-->
+  <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<!--  <link rel="stylesheet" href="assets/css/amazeui.min.css"/>-->
+<!--  <link rel="stylesheet" href="assets/css/admin.css">-->
+  <link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.3.0/css/amazeui.min.css"/>
 </head>
 <body>
-<header class="am-topbar am-topbar-fixed-top" style="background:#1E5B94">
-  <div class="am-container" >
-    <h1 class="am-topbar-brand am-u-sm-2">
-      <img src="logo/fakebook_logo.png" class="am-u-sm-12">
-    </h1>
+<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
 
-    <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-secondary am-show-sm-only"
-            data-am-collapse="{target: '#collapse-head'}"><span class="am-sr-only">导航切换</span> <span
-        class="am-icon-bars"></span></button>
+<header class="am-topbar admin-header">
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
 
-    <div class="am-collapse am-topbar-collapse" id="collapse-head">
+  <div class="am-collapse am-topbar-collapse am-u-md-6" id="topbar-collapse">
 
-      <div class="am-topbar-right">
-        <a href='/register'><button class="am-btn am-btn-secondary am-topbar-btn am-btn-sm"><span class="am-icon-pencil"></span> 注册</button></a>
-      </div>
+    <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-middle admin-header-list">
 
-      <div class="am-topbar-right">
-        <a href='/login'><button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"><span class="am-icon-user"></span> 登录</button></a>
+      <li>
+        <a href="/userPage">
+          <span class="am-icon-man-o">
+            主页
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="/state">
+          <span class="am-icon-man-o">
+            状态
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="/gallery">
+          <span class="am-icon-man-o">
+            相册
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="/chat">
+          <span class="am-icon-man-o">
+            多人聊天室
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="/peopleAround">
+          <span class="am-icon-man-o">
+            附近的人
+          </span>
+        </a>
+      </li>
+
+      <li>
+        <a href="#friend-side-bar" data-am-offcanvas>
+          <span class="am-icon-man-o">
+            小伙伴们
+          </span>
+        </a>
+      </li>
+
+
+
+    </ul>
+    <form action="/search" method="post" class="am-topbar-form am-u-md-4 am-u-sm-10">
+    <div class="">
+      <div class="am-input-group am-input-group-primary">
+          <input type="text" class="am-form-field search-field" name="friend" id="friend" placeholder="寻找小伙伴">
+          <span class="am-input-group-btn">
+            <button class="am-btn am-btn-primary search-button" type="submit"><span class="am-icon-search"></span></button>
+          </span>
       </div>
     </div>
+    </form>
+
+
+    <div class="am-topbar-right">
+      <div class="am-dropdown" data-am-dropdown="{boundary: '.am-topbar'}">
+        <button class="am-btn am-btn-secondary am-topbar-btn am-btn-sm am-dropdown-toggle" data-am-dropdown-toggle>通知 <span class="am-icon-caret-down"></span></button>
+        <ul class="am-dropdown-content notificationList">
+          <li class="am-dropdown-header">通知</li>
+          <li><a href="/friendManagement">处理好友请求</a></li>
+        </ul>
+      </div>
+    </div>
+
+
+
   </div>
+
+
+
+
 </header>
 
 
@@ -132,7 +124,7 @@ body, html,#allmap {width: 100%;height: 100%;margin:0;font-family:"微软雅黑"
 <title>可视区域内的搜素</title>
 </head>
 <body>
-<div id="allmap"></div>
+  <div id="allmap"></div>
 </body>
 </html>
 <script src="/socket.io/socket.io.js"></script>
@@ -141,6 +133,9 @@ body, html,#allmap {width: 100%;height: 100%;margin:0;font-family:"微软雅黑"
 // 百度地图API功能
 
 var socket = io();
+
+
+
 var map = new BMap.Map("allmap");
 var latitude;
 var longitude;
@@ -154,18 +149,123 @@ window.navigator.geolocation.getCurrentPosition (function (pos) {
 
 
 
+function ComplexCustomOverlay(point, text, mouseoverText, user_id){
+      this._point = point;
+      this._text = text;
+      this._overText = mouseoverText;
+      this._user_id = user_id;
+}
+ComplexCustomOverlay.prototype = new BMap.Overlay();
+ComplexCustomOverlay.prototype.initialize = function(map){
+  this._map = map;
+  var div = this._div = document.createElement("div");
+  div.style.position = "absolute";
+  div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);
+
+  div.style.backgroundColor = "#EE5D5B";
+  div.style.border = "1px solid #BC3B3A";
+  div.style.color = "white";
+  div.style.height = "18px";
+  div.style.padding = "2px";
+  div.style.lineHeight = "18px";
+  div.style.whiteSpace = "nowrap";
+  div.style.MozUserSelect = "none";
+  div.style.fontSize = "12px"
+  var span = this._span = document.createElement("span");
+  div.appendChild(span);
+  span.appendChild(document.createTextNode(this._text));
+  var that = this;
+
+  var arrow = this._arrow = document.createElement("div");
+  arrow.style.background = "url(http://map.baidu.com/fwmap/upload/r/map/fwmap/static/house/images/label.png) no-repeat";
+  arrow.style.position = "absolute";
+  arrow.style.width = "11px";
+  arrow.style.height = "10px";
+  arrow.style.top = "22px";
+  arrow.style.left = "10px";
+  arrow.style.overflow = "hidden";
+  div.appendChild(arrow);
+
+  var imgDiv = document.createElement("div");
+  var img = document.createElement("img");
+  var button = document.createElement("button");
+  button.setAttribute("class", "am-btn am-btn-primary am-u-sm-12");
+  button.innerHTML = "添加+";
+
+  /*
+  var nickname = pressedBtn.getAttribute('data-nickname');
+  $.post ('/friendAdder', {user_id: id, user_nickname: nickname}, function (data) {console.log ("addFriend: " + data);});
+  alert ('已向' + pressedBtn.getAttribute('data-id') + '申请好友');
+  */
+  button.onclick = function() {
+    $.post('/friendAdder', {user_id: that._user_id, user_nickname: that._text}, function(data) {console.log ("addFriend: " + data);});
+    alert("已向" + that._text + "申请好友");
+  }
+
+  img.setAttribute('class', 'am-img-circle am-img-thumbnail am-u-sm-12');
+  img.setAttribute('src', 'head_imgs/head_test.png');
+  imgDiv.appendChild(img);
+  imgDiv.appendChild(button);
+  imgDiv.style.visibility = 'hidden';
+  div.appendChild(imgDiv)
+
+  div.onmouseover = function(){
+    imgDiv.style.visibility = 'visible';
+    div.style.zIndex = 999;
+    this.style.backgroundColor = "#6BADCA";
+    this.style.borderColor = "#0000ff";
+    this.getElementsByTagName("span")[0].innerHTML = that._overText;
+    arrow.style.backgroundPosition = "0px -20px";
+  }
+
+  div.onmouseout = function(){
+    imgDiv.style.visibility = 'hidden';
+    div.style.zIndex = 0;
+    this.style.backgroundColor = "#EE5D5B";
+    this.style.borderColor = "#BC3B3A";
+    this.getElementsByTagName("span")[0].innerHTML = that._text;
+    arrow.style.backgroundPosition = "0px 0px";
+  }
+
+  map.getPanes().labelPane.appendChild(div);
+
+  return div;
+}
+
+ComplexCustomOverlay.prototype.draw = function(){
+  var map = this._map;
+  var pixel = map.pointToOverlayPixel(this._point);
+  this._div.style.left = pixel.x - parseInt(this._arrow.style.left) + "px";
+  this._div.style.top  = pixel.y - 30 + "px";
+}
+
+
+
+
+
+
+socket.on ("peopleAround", function (data) {
+  console.log (data);
+  showPeopleAround(data);
+});
+
+
+
+function showPeopleAround (peoples) {
+  for (var i = 0; i < peoples.length; ++i) {
+    var labelPoint = new BMap.Point(peoples[i].longitude, peoples[i].latitude);
+    var compOverlay = new ComplexCustomOverlay(labelPoint, peoples[i].nickname, peoples[i].nickname, peoples[i]._id);
+    map.addOverlay(compOverlay);
+  }
+}
 
 //map.centerAndZoom(new BMap.Point(longitude, latitude), 14);
 
 var local = new BMap.LocalSearch(map, {
   renderOptions:{map: map}
 });
-//local.searchInBounds("银行", map.getBounds());
 
-map.addEventListener("dragend",function(){
-    map.clearOverlays();
-    local.searchInBounds("同济大学", map.getBounds());
-});
+
 </script>
 
 
@@ -174,6 +274,8 @@ map.addEventListener("dragend",function(){
 
 
 <footer class="footer">
+  <br/>
+  <hr>
   <p class="am-padding-left" align=center>fakebook Tongji</p>
 </footer>
 
